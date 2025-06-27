@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from apps.tours.models import *
+from helpers.custom_admin import RestrictedAdmin
 
 
 class TourAgeInline(admin.TabularInline):
@@ -33,16 +34,16 @@ class TourExtraPriceInline(admin.TabularInline):
 
 
 @admin.register(Tour)
-class TourAdmin(admin.ModelAdmin):
+class TourAdmin(RestrictedAdmin):
     inlines = (TourAgeInline, TourExtraPriceInline)
     list_display = (
-        "id", 'code', 'name', 'is_pickup', 'created', 'type',
+        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'concept', 'transfer_type'
     )
     list_display_links = (
-        "id", 'code', 'name', 'is_pickup', 'created', 'type',
+        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'concept', 'transfer_type'
     )
     list_filter = (
-        "is_pickup", 'concept', 'type', 'transfer_type'
+        "is_pickup", 'concept', 'type', 'transfer_type', "supplier",
     )
 
     def save_related(self, request, form, formsets, change):
@@ -70,7 +71,7 @@ class TourAdmin(admin.ModelAdmin):
 
 
 @admin.register(TourExtraPrice)
-class TourExtraPriceAdmin(admin.ModelAdmin):
+class TourExtraPriceAdmin(RestrictedAdmin):
     list_display = (
         "id", "tour", "name", "price", "currency"
     )
@@ -82,7 +83,7 @@ class TourExtraPriceAdmin(admin.ModelAdmin):
 
 
 @admin.register(TourAgePrice)
-class TourExtraPriceAdmin(admin.ModelAdmin):
+class TourExtraPriceAdmin(RestrictedAdmin):
     list_display = (
         "id", "tour", "name", "min_age", "max_age", "price", "currency"
     )

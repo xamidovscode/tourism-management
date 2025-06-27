@@ -76,6 +76,9 @@ TEMPLATES = [
     },
 ]
 
+TEMPLATES[0]['DIRS'] = [os.path.join(BASE_DIR, '/templates')]
+
+
 WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {

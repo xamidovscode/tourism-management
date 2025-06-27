@@ -15,9 +15,9 @@ from helpers.choices import (
 
 class Tour(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    code = models.CharField(_("Code"), max_length=10, unique=True)
     name = models.CharField(_("Name"), max_length=100)
     is_pickup = models.BooleanField(_("Is Pickup"), default=False)
+    supplier = models.BooleanField(_("Supplier"), default=False)
     concept = models.CharField(
         choices=TourConceptChoice, default=TourConceptChoice.STANDARD, verbose_name=_("Concept")
     )

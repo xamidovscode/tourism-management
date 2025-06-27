@@ -1,0 +1,23 @@
+{% load i18n admin_list jazzmin %}
+{% if cl.has_filters %}
+    <div id="changelist-filter" class="card card-body">
+        <h5 class="text-muted">{% trans 'Filter' %}</h5>
+        <form method="get">
+            {% for spec in cl.filter_specs %}
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight: 600;">{{ spec.title }}</label>
+                    {% admin_list_filter cl spec %}
+                </div>
+            {% endfor %}
+
+            {% for hidden_filter_field in cl.get_filters_params.items %}
+                {% if hidden_filter_field.0 not in cl.model_admin.get_list_filter|default:"" %}
+                    <input type="hidden" name="{{ hidden_filter_field.0 }}" value="{{ hidden_filter_field.1 }}">
+                {% endif %}
+            {% endfor %}
+            <button type="submit" class="btn btn-primary mt-2 w-100">
+                {% trans 'Search' %}
+            </button>
+        </form>
+    </div>
+{% endif %}

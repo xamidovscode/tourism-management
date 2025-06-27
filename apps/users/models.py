@@ -45,3 +45,8 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        if not self.password.startswith('pbkdf2_sha256'):
+            self.set_password(self.password)
+        super(CustomUser, self).save(*args, **kwargs)

@@ -1,0 +1,129 @@
+/* SMALL HEIGHT AND SMALL WITH
+
+/*.main-sidebar {*/
+/*    width: 250px;*/
+/*}*/
+
+/*!* Adjust content area *!*/
+/*.content-wrapper {*/
+/*    margin-left: 300px;*/
+/*}*/
+
+/*!* Make cards taller or wider *!*/
+/*.card {*/
+/*    min-height: 600px;  !* increase height *!*/
+/*}*/
+
+/*!* Adjust table font size or row height *!*/
+/*.table th, .table td {*/
+/*    padding: 14px 10px;*/
+/*    font-size: 15px;*/
+/*}*/
+
+
+
+/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/EXEL TABLES
+
+
+.inline-group table, .change-list table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.inline-group table th, .inline-group table td,
+.change-list table th, .change-list table td {
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    text-align: left;
+}
+
+/* Make cells look like spreadsheet inputs */
+.inline-group input, .inline-group select,
+.change-list input, .change-list select {
+    border: none;
+    background-color: #f9f9f9;
+    width: 100%;
+    padding: 4px;
+    font-family: monospace;
+}
+
+/* Optional: highlight row on hover */
+.change-list table tr:hover, .inline-group table tr:hover {
+    background-color: #eef;
+}
+
+/* Fix delete checkbox column */
+.inline-deletelink {
+    min-width: 30px;
+}
+
+/* SEARCH BUTTON CONFIGURATIONS
+
+button[type="submit"] {
+    background-color: #4CAF50 !important;
+    color: white !important;
+    border-radius: 8px !important;
+    border: none !important;
+    padding: 6px 12px !important;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049 !important;
+}
+
+
+/*/*/*/*/*/*/*/*/*/*/*/*
+
+
+/* Jazzmin Sidebar Custom Colors */
+.sidebar {
+    background: linear-gradient(180deg, #1a237e, #0d47a1); /* Blue gradient */
+    color: #fff;
+    padding-top: 10px;
+}
+
+.sidebar a {
+    color: #bbdefb !important;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin: 6px 10px;
+    transition: all 0.2s ease;
+    display: block;
+}
+
+.sidebar a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff !important;
+}
+
+.sidebar a.active,
+.sidebar .active > a {
+    background-color: #42a5f5 !important;
+    color: #fff !important;
+    font-weight: 600;
+}
+
+/* Sidebar section headers */
+.sidebar .nav-header {
+    color: #90caf9;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-top: 20px;
+    padding-left: 15px;
+    font-weight: bold;
+}
+
+/* Scrollbar beautify (optional) */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: #4fc3f7;
+    border-radius: 3px;
+}

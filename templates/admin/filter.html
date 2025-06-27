@@ -1,0 +1,7 @@
+{% load i18n admin_list %}
+{% for spec in cl.filter_specs %}
+    <div class="filter-wrapper">
+        <h5 style="margin-bottom: 5px;">{{ spec.title }}</h5>
+        {% admin_list_filter cl spec %}
+    </div>
+{% endfor %}

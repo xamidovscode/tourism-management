@@ -23,7 +23,7 @@ class Sale(models.Model):
     extra_prices = models.ManyToManyField(
         "tours.TourExtraPrice",
     )
-    processed_at = models.DateTimeField()
+    processed_at = models.DateField()
     description = models.TextField(null=True, blank=True)
     agent = models.ForeignKey(
         'users.CustomUser',
@@ -38,6 +38,10 @@ class Sale(models.Model):
         on_delete=models.PROTECT,
     )
 
+    class Meta:
+        verbose_name = "My Sold Tours"
+        verbose_name_plural = "My Sold Tours"
+
 
 class TourProxy(Tour):
     class Meta:
@@ -45,8 +49,9 @@ class TourProxy(Tour):
         verbose_name = "Tours On Sale"
         verbose_name_plural = "Tours On Sale"
 
+
 class SaleProxy(Sale):
     class Meta:
         proxy = True
-        verbose_name = "Sold Tours"
-        verbose_name_plural = "Sold Tours"
+        verbose_name = "Sold Tours History"
+        verbose_name_plural = "Sold Tours History"

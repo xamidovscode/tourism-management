@@ -21,6 +21,7 @@ JAZZMIN_SETTINGS = {
         {"app": "tours"},
     ],
 
+
     "icons": {
         "admin.LogEntry": "fas fa-book",
         "auth.Permission": "fas fa-key",
@@ -51,10 +52,15 @@ JAZZMIN_SETTINGS = {
 
 
     "use_google_fonts_cdn": True,
-    "custom_css": None,
+
     "custom_js": None,
+    "custom_css": "css/custom_admin.css",
+
     "changeform_format": "horizontal_tabs",  # optional
     "show_ui_builder": False,
+
+    "hide_apps": ["auth"],
+    "hide_models": ["auth.Group"],
 }
 
 

@@ -4,6 +4,10 @@ from .models import *
 
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
+from helpers.custom_admin import RestrictedAdmin
+
+
+admin.site.disable_action('delete_selected')
 
 
 class SaleForm(forms.ModelForm):
@@ -36,7 +40,7 @@ class SaleForm(forms.ModelForm):
 
 
 @admin.register(Customer)
-class CustomerAdmin(admin.ModelAdmin):
+class CustomerAdmin(RestrictedAdmin):
     list_display = (
         'id', 'full_name', 'phone_number',
     )
@@ -46,7 +50,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 @admin.register(Sale)
-class SaleAdmin(admin.ModelAdmin):
+class SaleAdmin(RestrictedAdmin):
     form = SaleForm
 
     list_display = (
@@ -55,6 +59,15 @@ class SaleAdmin(admin.ModelAdmin):
     list_display_links = (
         "id", 'tour', 'processed_at', 'agent'
     )
+    list_filter = (
+        "tour", "customer", "processed_at"
+    )
+    exclude = ("agent", )
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.agent = request.user
+        obj.save()
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         field = super().formfield_for_foreignkey(db_field, request, **kwargs)
@@ -72,7 +85,7 @@ class SaleAdmin(admin.ModelAdmin):
 
 
 @admin.register(TourProxy)
-class TourProxyAdmin(admin.ModelAdmin):
+class TourProxyAdmin(RestrictedAdmin):
     list_display = (
         "id", "name", "is_pickup", "concept", "type", "allotment", "duration", "start_sale", "end_sale"
     )
@@ -95,10 +108,13 @@ class TourProxyAdmin(admin.ModelAdmin):
 
 
 @admin.register(SaleProxy)
-class SaleProxyAdmin(admin.ModelAdmin):
+class SaleProxyAdmin(RestrictedAdmin):
     list_display = (
         "id", "tour", "processed_at", "agent", 'description'
     )
     list_display_links = (
         "id", "tour", "processed_at", "agent", 'description'
+    )
+    list_filter = (
+        "tour", "customer", "processed_at", "agent"
     )
