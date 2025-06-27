@@ -1,0 +1,15 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block branding %}
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">{% trans "Django Administration" %}</a></h1>
+{% endblock %}
+
+{% block nav-global %}
+  <form method="get" action="" style="float: right; margin-right: 20px;">
+    <select name="language" onchange="this.form.submit()" value={% LANGUAGE_CODE %}>
+      <option value="uz">🇺🇿 Uzbek</option>
+      <option value="ru">🇷🇺 Russian</option>
+    </select>
+  </form>
+{% endblock %}

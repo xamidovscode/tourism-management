@@ -1,14 +1,19 @@
+import os
 from pathlib import Path
 from decouple import config
+from ..jazzmin_settings import *
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+print(BASE_DIR, 11111111)
 SECRET_KEY = config('SECRET_KEY', default='some-secret-key', cast=str)
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
 DJANGO_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -19,6 +24,9 @@ DJANGO_APPS = [
 
 CUSTOM_APPS = [
     'apps.common',
+    'apps.tours',
+    'apps.users',
+    'apps.sales'
 ]
 
 THIRD_PARTY_APPS = [
@@ -38,6 +46,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'django.middleware.locale.LocaleMiddleware',
+    'helpers.middleware.LanguageSwitchMiddleware',
 ]
 
 
@@ -73,8 +84,8 @@ DATABASES = {
         'NAME': config('NAME'),
         'USER': config('USER'),
         'PASSWORD': config('PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'HOST': config('HOST'),
+        'PORT': config('PORT'),
     }
 }
 
@@ -94,13 +105,29 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+AUTH_USER_MODEL = 'users.CustomUser'
+
+LANGUAGE_CODE = 'uz'
 
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
+LANGUAGES = [
+    ('uz', 'Uzbek'),
+    ('en', 'English'),
+]
+LOCALE_PATHS = [
+    BASE_DIR + "/" + 'locale',
+]
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS =[os.path.join(BASE_DIR, "..", 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
