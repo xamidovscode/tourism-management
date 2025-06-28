@@ -45,6 +45,9 @@ class TourAdmin(RestrictedAdmin):
     list_filter = (
         "is_pickup", 'concept', 'type', 'transfer_type', "supplier",
     )
+    search_fields = (
+        "name", "id",
+    )
 
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)

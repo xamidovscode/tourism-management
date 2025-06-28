@@ -1,0 +1,31 @@
+
+/* Sidebar header with brand logo and name */
+.brand-link {
+    background: #020617;  /* Match sidebar */
+    color: #ffffff !important;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    /*border-bottom: 1px solid rgba(255, 255, 255, 0.1);*/
+}
+
+ Brand logo image
+.brand-link .brand-image {
+    height: 0px;
+    width: 0px;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: #1f2937;
+    padding: 3px;
+}
+
+/* Brand text */
+.brand-link .brand-text {
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 1px;
+}

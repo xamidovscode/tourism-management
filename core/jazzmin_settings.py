@@ -54,12 +54,14 @@ JAZZMIN_SETTINGS = {
     "use_google_fonts_cdn": True,
 
     "custom_js": None,
-    "custom_css": "css/custom_admin.css",
+    "custom_css": "css/main.css",
 
     "changeform_format": "horizontal_tabs",  # optional
     "show_ui_builder": False,
 
-    "hide_apps": ["auth"],
+    "hide_apps": [
+        "auth", 'apps.common'
+    ],
     "hide_models": ["auth.Group"],
 }
 
