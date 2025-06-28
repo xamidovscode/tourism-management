@@ -5,9 +5,9 @@ services:
     image: postgres:15
     container_name: dubai_bonus_db
     environment:
-      POSTGRES_DB: bonus
-      POSTGRES_USER: bonus
-      POSTGRES_PASSWORD: bonus
+      POSTGRES_DB: dubai_bonus
+      POSTGRES_USER: dubai_bonus
+      POSTGRES_PASSWORD: dubai_bonus
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -22,9 +22,9 @@ services:
     depends_on:
       - db
     environment:
-      POSTGRES_DB: bonus
-      POSTGRES_USER: bonus
-      POSTGRES_PASSWORD: bonus
+      POSTGRES_DB: dubai_bonus
+      POSTGRES_USER: dubai_bonus
+      POSTGRES_PASSWORD: dubai_bonus
       DB_HOST: db
 
 volumes:
