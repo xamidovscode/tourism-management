@@ -54,7 +54,7 @@ class TourAdmin(RestrictedAdmin):
         result = ""
 
         for age_price in TourAgePrice.objects.filter(tour=obj):
-            result += str(str(age_price.name) + " - " + str(age_price.price) + f" {age_price.currency.name if age_price.currency else " nomalum"}" + "<br>")
+            result += str(str(age_price.name) + " - " + str(age_price.price) + f" {age_price.currency.name if age_price.currency else ' nomalum'}" + "<br>")
         return format_html(result)
 
     price_by_age.short_description = "Prices By Age"

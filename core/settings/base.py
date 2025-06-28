@@ -6,7 +6,6 @@ from ..jazzmin_settings import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-print(BASE_DIR, 11111111)
 SECRET_KEY = config('SECRET_KEY', default='some-secret-key', cast=str)
 DEBUG = config('DEBUG', default=False, cast=bool)
 
