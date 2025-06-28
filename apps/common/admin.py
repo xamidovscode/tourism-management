@@ -26,3 +26,10 @@ class TourTypeAdmin(RestrictedAdmin):
 @admin.register(Market)
 class TourTypeAdmin(RestrictedAdmin):
     list_display = ("id", "name")
+
+
+@admin.register(Region)
+class RegionAdmin(RestrictedAdmin):
+    list_display = ("id", "name")
+
+

@@ -11,6 +11,9 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('The Username must be set')
         user = self.model(username=username, **extra_fields)
         user.set_password(password)
+        user.is_active = True
+        user.is_staff = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
@@ -31,13 +34,13 @@ class CustomUser(AbstractUser):
     first_name = None
     last_name = None
 
-
+    created_at = models.DateTimeField(auto_now_add=True)
     full_name = models.CharField(max_length=255)
 
     status = models.CharField(
         choices=[
-            ('agent', 'Agent'),
-            ('admin', 'admin'),
+            ('agent', 'AGENT'),
+            ('admin', 'ADMIN'),
         ]
     )
     objects = CustomUserManager()

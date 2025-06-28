@@ -1,46 +1,17 @@
-from django.db import models
-from django.core.exceptions import ValidationError
+from decimal import Decimal
 
-from apps import common
+from django.core.exceptions import ValidationError
+from django.db import models
+
+from apps.sales.models import Customer
 from apps.tours.models import Tour
 from helpers.choices import SaleDiscountChoice
-
-
-class Customer(models.Model):
-    full_name = models.CharField(
-        max_length=255
-    )
-    phone_number = models.CharField(
-        max_length=255
-    )
-    age = models.IntegerField(
-        default=0,
-    )
-    passport = models.CharField(
-        max_length=255, null=True, blank=True
-    )
-
-
-    def __str__(self):
-        return (
-                self.full_name + " | " +
-                str(self.phone_number[4:]) + " | age " +
-                str(self.age) + " | " +
-                str(self.passport if self.passport else "")
-        )
-
 
 
 class Sale(models.Model):
 
     tour = models.ForeignKey(
         "tours.Tour", on_delete=models.PROTECT,
-    )
-    age_prices = models.ManyToManyField(
-        "tours.TourAgePrice",
-    )
-    extra_prices = models.ManyToManyField(
-        "tours.TourExtraPrice",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     processed_at = models.DateField(verbose_name="Tour Date")
@@ -61,9 +32,6 @@ class Sale(models.Model):
     hotel = models.ManyToManyField(
         'common.Hotel',
     )
-    customer = models.ManyToManyField(
-        Customer,
-    )
     discount = models.PositiveIntegerField(
         default=0,
     )
@@ -81,6 +49,54 @@ class Sale(models.Model):
         verbose_name = "My Sold Tours"
         verbose_name_plural = "My Sold Tours"
 
+    @property
+    def tour_amount(self):
+        extra_price = self.extra_prices.all().aggregate(
+            amount=models.Sum('extra_price__price')
+        )['amount'] or 0
+        age_price = self.age_prices.all().aggregate(
+            amount=models.Sum('age_price__price')
+        )['amount'] or 0
+
+        total = extra_price + age_price
+
+        if self.discount_type == "percentage" and self.discount > 0:
+            return round(total - (total * (Decimal(self.discount) / Decimal("100"))))
+        else:
+            return total - self.discount
+
+
+class SaleAgePrice(models.Model):
+    sale = models.ForeignKey(
+        "sales.Sale",
+        on_delete=models.PROTECT,
+        related_name="age_prices",
+    )
+    age_price = models.ForeignKey(
+        'tours.TourAgePrice',
+        on_delete=models.PROTECT,
+    )
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.PROTECT,
+    )
+
+
+class SaleExtraPrice(models.Model):
+    sale = models.ForeignKey(
+        "sales.Sale",
+        on_delete=models.PROTECT,
+        related_name="extra_prices",
+    )
+    extra_price = models.ForeignKey(
+        'tours.TourExtraPrice',
+        on_delete=models.PROTECT,
+    )
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.PROTECT,
+    )
+
 
 class TourProxy(Tour):
 
@@ -88,11 +104,3 @@ class TourProxy(Tour):
         proxy = True
         verbose_name = "Tours On Sale"
         verbose_name_plural = "Tours On Sale"
-
-
-class SaleHistoryProxy(Sale):
-
-    class Meta:
-        proxy = True
-        verbose_name = "Sold Tours History"
-        verbose_name_plural = "Sold Tours History"

@@ -1,10 +1,10 @@
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from io import BytesIO
-from .models import SaleHistoryProxy
+from .models import SoldTours
 
 def export_pdf(request, pk):
-    sale = SaleHistoryProxy.objects.get(pk=pk)
+    sale = SoldTours.objects.get(pk=pk)
 
     # Create a PDF buffer
     buffer = BytesIO()
@@ -29,6 +29,6 @@ def export_pdf(request, pk):
     return response
 
 def export_excel(request, pk):
-    sale = SaleHistoryProxy.objects.get(pk=pk)
+    sale = SoldTours.objects.get(pk=pk)
     # 👇 replace with your actual export logic
     return HttpResponse(f"Excel export for sale ID {pk}")

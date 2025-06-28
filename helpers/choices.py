@@ -9,6 +9,6 @@ class TourConceptChoice(models.TextChoices):
 
 
 class SaleDiscountChoice(models.TextChoices):
-    percentage = "percentage", "Percentage %"
-    amount = "amount", "Amount $"
+    percentage = "percentage", "%"
+    amount = "amount", "$"
 
