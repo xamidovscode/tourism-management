@@ -20,43 +20,53 @@ class SaleForm(forms.ModelForm):
     class Media:
         js = ('admin/js/sale_filter.js',)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        for field_name in ['tour', 'agent', 'customer']:
-            field = self.fields.get(field_name)
-            if field and hasattr(field.widget, 'can_add_related'):
-                field.widget.can_add_related = False
-                field.widget.can_change_related = False
-                field.widget.can_delete_related = False
-                field.widget.can_view_related = False
-
-        for field_name in ['age_prices', 'extra_prices']:
-            field = self.fields.get(field_name)
-            if field and hasattr(field.widget, 'can_add_related'):
-                field.widget.can_add_related = False
-                field.widget.can_change_related = False
-                field.widget.can_delete_related = False
-                field.widget.can_view_related = False
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #
+    #     for field_name in ['tour', 'agent', 'customer', 'region']:
+    #         field = self.fields.get(field_name)
+    #         if field and hasattr(field.widget, 'can_add_related'):
+    #             field.widget.can_add_related = False
+    #             field.widget.can_change_related = False
+    #             field.widget.can_delete_related = False
+    #             field.widget.can_view_related = False
+    #
+    #     for field_name in ['age_prices', 'extra_prices']:
+    #         field = self.fields.get(field_name)
+    #         if field and hasattr(field.widget, 'can_add_related'):
+    #             field.widget.can_add_related = False
+    #             field.widget.can_change_related = False
+    #             field.widget.can_delete_related = False
+    #             field.widget.can_view_related = False
 
 
 
 
 @admin.register(Customer)
 class CustomerAdmin(RestrictedAdmin):
-    list_display = ('id', 'full_name', 'phone_number')
-    list_display_links = ('id', 'full_name', 'phone_number')
-    change_form_template = 'admin/customers/customer_detail.html'  # Path matches template
+    list_display = ('id', 'full_name', 'phone_number', "age", "passport")
+    list_display_links = ('id', 'full_name', 'phone_number', "age", "passport")
+    change_form_template = 'admin/customers/customer_detail.html'
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
-        extra_context['default_table'] = [
-            ['A1', 'B1', 'C1', 'D1'],
-            ['A2', 'B2', 'C2', 'D2'],
-            ['A3', 'B3', 'C3', 'D3'],
-            ['A4', 'B4', 'C4', 'D4'],
-            ['A5', 'B5', 'C5', 'D5'],
-        ]
+        result = []
+        sales = Sale.objects.filter(
+            customer=object_id,
+        )
+
+        for sale in sales:
+            result.append(
+                [
+                    str(sale.tour.name),
+                    f"{sale.tour.start_sale} - {sale.tour.end_sale}",
+                    str(sale.tour.transfer_type.name),
+                    str(sale.agent.full_name),
+                    str(sale.created_at.date()),
+                ]
+            )
+
+        extra_context['default_table'] = result
         return super().change_view(request, object_id, form_url, extra_context=extra_context)
 
 

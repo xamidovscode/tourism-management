@@ -56,7 +56,7 @@ class Sale(models.Model):
     region = models.ForeignKey(
         'common.Region',
         on_delete=models.PROTECT,
-        null=True,
+        null=True, blank=True,
     )
     hotel = models.ManyToManyField(
         'common.Hotel',

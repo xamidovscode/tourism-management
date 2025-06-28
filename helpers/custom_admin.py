@@ -5,6 +5,7 @@ ALLOWED_AGENT_MODELS = [
     'sales.Customer',
     'sales.Sale',
     'sales.TourProxy',
+    'common.Region'
 ]
 
 DISALLOWED_ADMIN_MODELS = [
