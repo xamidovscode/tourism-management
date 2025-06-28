@@ -55,3 +55,9 @@ class Market(models.Model):
     def __str__(self):
         return self.name
 
+
+class Region(models.Model):
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    class Meta:
+        verbose_name = _("Region")
+

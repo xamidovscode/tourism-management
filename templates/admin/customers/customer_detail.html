@@ -1,0 +1,38 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block after_related_objects %}
+  {{ block.super }}
+
+  <div style="margin-top: 300px;">
+    <h3 style="font-size: 50px; font-weight: 1000; margin-bottom: 20px;">📊 Custom Table</h3>
+    <div style="overflow-x: auto;">
+      <table style="
+          width: 100%;
+          border-collapse: collapse;
+          background-color: #fff;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+          border-radius: 8px;
+          overflow: hidden;
+        ">
+        <thead style="background-color: #f8f9fa;">
+          <tr>
+            <th style="padding: 12px; text-align: left; font-weight: 600; color: #495057;">Field 1</th>
+            <th style="padding: 12px; text-align: left; font-weight: 600; color: #495057;">Field 2</th>
+            <th style="padding: 12px; text-align: left; font-weight: 600; color: #495057;">Field 3</th>
+            <th style="padding: 12px; text-align: left; font-weight: 600; color: #495057;">Field 4</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in default_table %}
+          <tr style="border-top: 1px solid #dee2e6;">
+            {% for cell in row %}
+            <td style="padding: 10px 12px; color: #343a40;">{{ cell }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

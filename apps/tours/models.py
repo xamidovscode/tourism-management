@@ -22,8 +22,8 @@ class Tour(models.Model):
         choices=TourConceptChoice, default=TourConceptChoice.STANDARD, verbose_name=_("Concept")
     )
     type = models.ForeignKey(TourType, verbose_name=_("Tour Type"), on_delete=models.PROTECT)
-    allotment = models.PositiveIntegerField(_("Allotment"), default=0)
-    duration = models.CharField(_("Duration"), max_length=100)
+    allotment = models.PositiveIntegerField(_("Allotment(count)"), default=0)
+    duration = models.CharField(_("Duration(days)"), max_length=100)
     transfer_type = models.ForeignKey(TransferType, verbose_name=_("Transfer Type"), on_delete=models.PROTECT)
     start_sale = models.DateField(_("Start Sale"))
     end_sale = models.DateField(_("End Sale"))
@@ -56,7 +56,7 @@ class TourExtraPrice(models.Model):
     )
 
     def __str__(self):
-        return self.name + " | " + str(self.price) + "-" + str(self.currency.name)
+        return self.tour.name + " | " + self.name + " | " + str(self.price) + "-" + str(self.currency.name)
 
 
 

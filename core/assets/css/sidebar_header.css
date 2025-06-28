@@ -1,7 +1,7 @@
 
 /* Sidebar header with brand logo and name */
 .brand-link {
-    background: #020617;  /* Match sidebar */
+    background: #1e293b;  /* Match sidebar */
     color: #ffffff !important;
     display: flex;
     align-items: center;
@@ -13,7 +13,6 @@
     /*border-bottom: 1px solid rgba(255, 255, 255, 0.1);*/
 }
 
- Brand logo image
 .brand-link .brand-image {
     height: 0px;
     width: 0px;

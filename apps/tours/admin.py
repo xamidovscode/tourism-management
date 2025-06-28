@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 from apps.tours.models import *
 from helpers.custom_admin import RestrictedAdmin
@@ -37,10 +38,10 @@ class TourExtraPriceInline(admin.TabularInline):
 class TourAdmin(RestrictedAdmin):
     inlines = (TourAgeInline, TourExtraPriceInline)
     list_display = (
-        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'concept', 'transfer_type'
+        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'concept', 'transfer_type', 'price_by_age'
     )
     list_display_links = (
-        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'concept', 'transfer_type'
+        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'concept', 'transfer_type', 'price_by_age'
     )
     list_filter = (
         "is_pickup", 'concept', 'type', 'transfer_type', "supplier",
@@ -48,6 +49,16 @@ class TourAdmin(RestrictedAdmin):
     search_fields = (
         "name", "id",
     )
+
+    def price_by_age(self, obj):
+        result = ""
+
+        for age_price in TourAgePrice.objects.filter(tour=obj):
+            result += str(str(age_price.name) + " - " + str(age_price.price) + f" {age_price.currency.name if age_price.currency else " nomalum"}" + "<br>")
+        return format_html(result)
+
+    price_by_age.short_description = "Prices By Age"
+    price_by_age.admin_order_field = "agent"
 
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)

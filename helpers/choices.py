@@ -7,3 +7,8 @@ class TourConceptChoice(models.TextChoices):
     FREE = "free", "Free"
     GROUP = "group", "Group"
 
+
+class SaleDiscountChoice(models.TextChoices):
+    percentage = "percentage", "Percentage %"
+    amount = "amount", "Amount $"
+

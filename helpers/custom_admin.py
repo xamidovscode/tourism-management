@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+
 ALLOWED_AGENT_MODELS = [
     'sales.Customer',
     'sales.Sale',

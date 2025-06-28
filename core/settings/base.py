@@ -64,7 +64,9 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, "..", 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,7 +78,6 @@ TEMPLATES = [
     },
 ]
 
-TEMPLATES[0]['DIRS'] = [os.path.join(BASE_DIR, '/templates')]
 
 
 WSGI_APPLICATION = 'core.wsgi.application'
@@ -123,6 +124,7 @@ LOCALE_PATHS = [
     BASE_DIR + "/" + 'locale',
 ]
 
+TIME_ZONE = 'Asia/Tashkent'
 USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
