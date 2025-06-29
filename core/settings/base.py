@@ -4,7 +4,7 @@ from decouple import config
 from ..jazzmin_settings import *
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='some-secret-key', cast=str)
 DEBUG = config('DEBUG', default=False, cast=bool)
@@ -120,7 +120,7 @@ LANGUAGES = [
     ('en', 'English'),
 ]
 LOCALE_PATHS = [
-    BASE_DIR + "/" + 'locale',
+    BASE_DIR / 'locale',
 ]
 
 TIME_ZONE = 'Asia/Tashkent'
@@ -129,9 +129,9 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS =[os.path.join(BASE_DIR, "..", 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, "..", '/static/')
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
+STATICFILES_DIRS = (BASE_DIR / "staticfiles",)
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "..", '/media/')
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
