@@ -1,0 +1,16 @@
+a.addlink {
+    background-color: #4c98af !important;
+    color: white !important;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: 0.3s ease;
+    text-transform: uppercase;
+}
+
+a.addlink:hover {
+    background-color: #4c98af !important;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+}
+

@@ -1,0 +1,46 @@
+.sidebar {
+    background: #1f2937 !important;
+    color: #ffffff;
+}
+
+.sidebar a {
+    color: #e0e0e0 !important;
+    font-weight: 1000;
+    padding: 10px 15px;
+    margin: 6px 10px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+    display: block;
+}
+
+.sidebar a:hover {
+    background: #1f2937;
+    color: #ffffff !important;
+}
+
+.sidebar a.active {
+    background-color: #1f2937 !important;
+    font-weight: bold;
+    color: #ffffff !important;
+}
+
+.sidebar .nav-header {
+    color: #cfd8dc;
+    font-size: 11px;
+    padding-left: 15px;
+    margin-top: 15px;
+    text-transform: uppercase;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
