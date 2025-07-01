@@ -21,6 +21,29 @@ JAZZMIN_SETTINGS = {
         {"app": "tours"},
     ],
 
+    "menu": [
+        {"apps": "sales", "models": [
+            {"name": "Customer", "label": "Customers"},
+            {"name": "SoldTours", "label": "Sold Tours History"},
+        ]},
+        {"apps": "tours", "models": [
+            {"name": "tour_age_price", "label": "Tour Age Prices"},
+            {"name": "tour_extra_price", "label": "Tour Extra Prices"},
+            {"name": "tour", "label": "Tours"},
+        ]},
+        {"apps": "users", "models": [
+            # users app modeli shu yerda
+        ]},
+        {"apps": "common", "models": [
+            {"name": "currency", "label": "Currencies"},
+            {"name": "hotel", "label": "Hotels"},
+            {"name": "market", "label": "Markets"},
+            {"name": "region", "label": "Regions"},
+            {"name": "tour_type", "label": "Tour Types"},
+            {"name": "transfer_type", "label": "Transfer Types"},
+        ]},
+    ],
+
 
     "icons": {
         "admin.LogEntry": "fas fa-book",
