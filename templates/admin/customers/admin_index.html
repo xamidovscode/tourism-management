@@ -1,0 +1,582 @@
+{% extends 'admin/index.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+/* Base styles */
+.dashboard-container {
+    @apply p-8 md:p-16 transition-colors duration-200; /* Further increased padding */
+    max-width: 1600px; /* Increased max-width for larger screens */
+    margin: 0 auto;
+}
+
+.dashboard-card {
+    @apply bg-white rounded-xl shadow-md p-10 md:p-12 transition-transform duration-200 border border-gray-200 hover:shadow-lg; /* Further increased padding */
+}
+
+.dashboard-card-title {
+    @apply text-4xl md:text-5xl font-semibold text-gray-600 flex items-center; /* Further increased font size */
+}
+
+.dashboard-card-value {
+    @apply text-6xl md:text-8xl font-extrabold mt-6 text-gray-800; /* Further increased font size and margin */
+}
+
+.dashboard-chart-container {
+    @apply bg-white rounded-xl shadow-md p-10 md:p-12 transition-transform duration-200 border border-gray-200; /* Further increased padding */
+}
+
+.dashboard-card-icon {
+    @apply w-16 h-16 rounded-full flex items-center justify-center; /* Further increased icon size */
+}
+
+.stats-filter {
+    @apply mb-10 flex flex-col md:flex-row gap-8; /* Further increased margin and gap */
+}
+
+.stats-filter select {
+    @apply p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500; /* Further increased padding */
+}
+
+.stats-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-10; /* Further increased gap */
+}
+
+.filter-container {
+    margin-bottom: 40px; /* Further increased margin */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px; /* Further increased gap */
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    margin-bottom: 10px; /* Further increased margin */
+    font-weight: 500;
+    font-size: 18px; /* Further increased font size */
+}
+
+.chart-container {
+    background-color: #fff;
+    border-radius: 12px; /* Further increased radius */
+    padding: 40px; /* Further increased padding */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    display: none;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        @apply p-6; /* Adjusted padding for mobile */
+    }
+
+    .dashboard-card {
+        @apply p-8; /* Adjusted padding for mobile */
+    }
+
+    .dashboard-card-title {
+        @apply text-3xl; /* Adjusted font size for mobile */
+    }
+
+    .dashboard-card-value {
+        @apply text-5xl; /* Adjusted font size for mobile */
+    }
+
+    .dashboard-card-icon {
+        @apply w-14 h-14; /* Adjusted icon size for mobile */
+    }
+
+    .stats-grid {
+        @apply grid-cols-1;
+    }
+
+    .filter-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px; /* Adjusted gap for mobile */
+    }
+
+    .filter-group label {
+        font-size: 16px; /* Adjusted font size for mobile */
+    }
+}
+
+#orderChart {
+    max-height: 600px; /* Further increased chart height */
+    width: 100%;
+    margin-top: 40px; /* Further increased margin */
+}
+
+.filter-container select,
+.filter-container input {
+    padding: 12px 16px; /* Further increased padding */
+    border: 1px solid #ccc;
+    border-radius: 10px; /* Further increased radius */
+    font-size: 18px; /* Further increased font size */
+    min-width: 200px; /* Further increased minimum width */
+    outline: none;
+    background-color: #ffffff;
+    color: #333;
+}
+
+.filter-container select:focus,
+.filter-container input:focus {
+    border-color: #3366CC;
+    box-shadow: 0 0 0 2px rgba(51, 102, 204, 0.2);
+}
+
+.filter-container select#userFilter {
+    width: 300px; /* Increased width for userFilter select */
+}
+
+.select2-container--default .select2-selection--single {
+    height: 48px; /* Further increased height */
+    padding: 10px; /* Further increased padding */
+    border: 1px solid #ccc;
+    border-radius: 10px; /* Further increased radius */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 46px; /* Adjusted arrow height */
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #3366CC;
+}
+
+.select2-dropdown {
+    border: 1px solid #ccc;
+    border-radius: 10px; /* Further increased radius */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Dark theme styles remain unchanged */
+[data-theme="dark"] body {
+    @apply bg-gray-900;
+}
+
+[data-theme="dark"] .dashboard-card {
+    @apply bg-gray-800 border-gray-700;
+}
+
+[data-theme="dark"] .dashboard-card-title {
+    @apply text-gray-300;
+}
+
+[data-theme="dark"] .dashboard-card-value {
+    @apply text-white;
+}
+
+[data-theme="dark"] .dashboard-chart-container,
+[data-theme="dark"] .chart-container {
+    @apply bg-gray-800 border-gray-700;
+}
+
+[data-theme="dark"] h3 {
+    @apply text-white;
+}
+
+[data-theme="dark"] .loading-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="dark"] .filter-container select,
+[data-theme="dark"] .filter-container input {
+    background-color: #4a5568;
+    border-color: #718096;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .filter-container select:focus,
+[data-theme="dark"] .filter-container input:focus {
+    border-color: #63b3ed;
+    box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.3);
+}
+
+[data-theme="dark"] .filter-container label {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .select2-container--default .select2-selection--single {
+    background-color: #4a5568;
+    border-color: #718096;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .select2-dropdown {
+    background-color: #4a5568;
+    border-color: #718096;
+}
+
+[data-theme="dark"] .select2-container--default .select2-results__option {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .select2-container--default .select2-search--dropdown .select2-search__field {
+    background-color: #2d3748;
+    border-color: #718096;
+    color: #e2e8f0;
+}
+
+.dark .select2-search__field {
+    background-color: #1a202c;
+    border-color: #4a5568;
+    color: #e2e8f0;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container" data-theme-target="container">
+
+    <!-- Chart Section -->
+    <div class="dashboard-chart-container mt-8 relative">
+        <div class="loading-overlay" id="chartLoading">
+            <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </div>
+        <!-- Date Range and Filters -->
+        <div class="filter-container">
+            <div class="filter-group">
+                <label for="dateRangeFilter">{% trans 'Date Range' %}</label>
+                <input type="text" id="dateRangeFilter" class="form-control" placeholder="{% trans 'Choose date range' %}">
+            </div>
+            <div class="filter-group">
+                <label for="monthFilter">{% trans 'Month' %}</label>
+                <select id="monthFilter" class="form-control">
+                    {% for i in "123456789101112"|make_list %}
+                        <option value="{{ forloop.counter }}" {% if selected_month == forloop.counter %}selected{% endif %}>
+                            {{ forloop.counter }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="yearFilter">{% trans 'Year' %}</label>
+                <select id="yearFilter" class="form-control">
+                    {% for year in "54321011111"|make_list %}
+                        {% with year_value=selected_year|add:forloop.counter0|add:-5 %}
+                            <option value="{{ year_value }}" {% if selected_year == year_value %}selected{% endif %}>
+                                {{ year_value }}
+                            </option>
+                        {% endwith %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter">{% trans 'Category' %}</label>
+                <select id="categoryFilter" class="form-control">
+                    <option value="">{% trans 'All Categories' %}</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category_id|add:"0" == category.id|add:"0" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="userLevelFilter">{% trans 'User Level' %}</label>
+                <select id="userLevelFilter" class="form-control">
+                    <option value="">{% trans 'All Levels' %}</option>
+                    {% for level in user_levels %}
+                        <option value="{{ level }}" {% if selected_user_type == level %}selected{% endif %}>
+                            {{ level|title }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="userFilter">{% trans 'Selected User' %}</label>
+
+                <select id="userFilter" class="form-control" style="width: 200px;">
+                    <option value="">{% trans 'All Users' %}</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}" {% if selected_user_id|add:"0" == user.id|add:"0" %}selected{% endif %}>
+                            {{ user.fullname|default:user.fullname }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <!-- Chart -->
+        <canvas id="orderChart" height="300"></canvas>
+    </div>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    // Chart data from Django
+    const chartData = {{ chart_data|safe }};
+
+    // Initialize Chart.js
+    const ctx = document.getElementById('orderChart').getContext('2d');
+    const orderChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: [
+                {
+                    label: '📦 {% trans "Total Orders" %}',
+                    data: chartData.orders,
+                    borderColor: '#3366CC',
+                    backgroundColor: 'rgba(51, 102, 204, 0.1)',
+                    tension: 0.3
+                },
+                {
+                    label: '💰 {% trans "Benefit (USD)" %}',
+                    data: chartData.revenues,
+                    borderColor: '#33AA55',
+                    backgroundColor: 'rgba(51, 170, 85, 0.1)',
+                    tension: 0.3
+                },
+                {
+                    label: '💵 {% trans "Total Price (USD)" %}',
+                    data: chartData.total_prices,
+                    borderColor: '#FF5733',
+                    backgroundColor: 'rgba(255, 87, 51, 0.1)',
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    grid: {
+                        color: 'rgba(200, 200, 200, 0.3)'
+                    },
+                    title: {
+                        display: true,
+                        text: '{% trans "Day of Month" %}'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(200, 200, 200, 0.3)'
+                    },
+                    title: {
+                        display: true,
+                        text: '{% trans "Value" %}'
+                    }
+                }
+            }
+        }
+    });
+
+    // Initialize flatpickr
+    const dateRangePicker = flatpickr("#dateRangeFilter", {
+        mode: "range",
+        dateFormat: "Y-m-d",
+        defaultDate: [
+            new Date({{ selected_year }}, {{ selected_month|add:"-1" }}, 1),
+            new Date({{ selected_year }}, {{ selected_month|add:"-1" }}, new Date({{ selected_year }}, {{ selected_month }}, 0).getDate())
+        ],
+        onChange: function(selectedDates, dateStr) {
+            if (selectedDates.length === 2) {
+                const startDate = selectedDates[0];
+                const endDate = selectedDates[1];
+                fetchDataWithFilters(startDate, endDate);
+            }
+        }
+    });
+
+    // Loading indicators
+    const statsLoading = document.getElementById('statsLoading');
+    const chartLoading = document.getElementById('chartLoading');
+
+
+    // Fetch data with filters
+    function fetchDataWithFilters(startDate, endDate) {
+        const startDateStr = startDate.toISOString().split('T')[0];
+        const endDateStr = endDate.toISOString().split('T')[0];
+        const category = document.getElementById('categoryFilter').value;
+        const userLevel = document.getElementById('userLevelFilter').value;
+        const userId = document.getElementById('userFilter').value;
+
+        let url = `{% url 'admin:index' %}?start_date=${startDateStr}&end_date=${endDateStr}`;
+        if (category) url += `&category=${category}`;
+        if (userLevel) url += `&user_type=${userLevel}`;
+        if (userId) url += `&user_id=${userId}`;
+
+        statsLoading.classList.add('active');
+        chartLoading.classList.add('active');
+
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                orderChart.data.labels = data.labels;
+                orderChart.data.datasets[0].data = data.orders;
+                orderChart.data.datasets[1].data = data.revenues;
+                orderChart.data.datasets[2].data = data.total_prices;
+                orderChart.update();
+                window.location.href = url.replace('X-Requested-With=XMLHttpRequest', '');
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                alert('Failed to load data. Please try again.');
+            })
+            .finally(() => {
+                statsLoading.classList.remove('active');
+                chartLoading.classList.remove('active');
+            });
+    }
+
+    // Handle filter changes
+    const monthFilter = document.getElementById('monthFilter');
+    const yearFilter = document.getElementById('yearFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const userLevelFilter = document.getElementById('userLevelFilter');
+    const userFilter = document.getElementById('userFilter');
+    const userSearch = document.getElementById('userSearch');
+
+    function updateChart() {
+        const month = monthFilter.value;
+        const year = yearFilter.value;
+        const category = categoryFilter.value;
+        const userLevel = userLevelFilter.value;
+        const userId = userFilter.value;
+
+        dateRangePicker.clear();
+        const lastDay = new Date(year, month, 0).getDate();
+        dateRangePicker.setDate([
+            new Date(year, month - 1, 1),
+            new Date(year, month - 1, lastDay)
+        ]);
+
+        let url = `{% url 'admin:index' %}?month=${month}&year=${year}`;
+        if (category) url += `&category=${category}`;
+        if (userLevel) url += `&user_type=${userLevel}`;
+        if (userId) url += `&user_id=${userId}`;
+
+        statsLoading.classList.add('active');
+        chartLoading.classList.add('active');
+
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                orderChart.data.labels = data.labels;
+                orderChart.data.datasets[0].data = data.orders;
+                orderChart.data.datasets[1].data = data.revenues;
+                orderChart.data.datasets[2].data = data.total_prices;
+                orderChart.update();
+                window.location.href = url.replace('X-Requested-With=XMLHttpRequest', '');
+            })
+            .catch(error => {
+                console.error('Error fetching filtered data:', error);
+                alert('Failed to load data. Please try again.');
+            })
+            .finally(() => {
+                statsLoading.classList.remove('active');
+                chartLoading.classList.remove('active');
+            });
+    }
+
+
+    // Mutual exclusivity for user level and user filters
+    userLevelFilter.addEventListener('change', function() {
+        if (this.value) {
+            userFilter.value = '';
+            $('#userFilter').trigger('change');
+        }
+        updateChart();
+    });
+
+    userFilter.addEventListener('change', function() {
+        if (this.value) {
+            userLevelFilter.value = '';
+        }
+        updateChart();
+    });
+
+    // Event listeners for filters
+    monthFilter.addEventListener('change', updateChart);
+    yearFilter.addEventListener('change', updateChart);
+    categoryFilter.addEventListener('change', updateChart);
+
+    // Initialize Select2 and user search
+    $(document).ready(function() {
+        $('#userFilter').select2({
+            placeholder: "{% trans 'Select a user' %}",
+            allowClear: true,
+            width: '100%'
+        });
+
+        $('#userFilter').on('select2:select', function(e) {
+            const userId = e.params.data.id;
+            if (userId) {
+                userLevelFilter.value = '';
+                updateChart();
+            }
+        });
+
+        $('#userFilter').on('select2:clear', function() {
+            updateChart();
+        });
+    });
+
+    // Theme observer for Select2
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'data-theme') {
+                const theme = document.body.getAttribute('data-theme');
+                if (theme === 'dark') {
+                    $('.select2-container--default .select2-selection--single').addClass('dark-theme');
+                } else {
+                    $('.select2-container--default .select2-selection--single').removeClass('dark-theme');
+                }
+            }
+        });
+    });
+
+    observer.observe(document.body, { attributes: true });
+</script>
+{% endblock %}
