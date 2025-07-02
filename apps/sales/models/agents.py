@@ -11,7 +11,8 @@ from helpers.choices import SaleDiscountChoice
 class Sale(models.Model):
 
     tour = models.ForeignKey(
-        "tours.Tour", on_delete=models.PROTECT,
+        "tours.Tour",  on_delete=models.PROTECT,
+        verbose_name='Tour'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     processed_at = models.DateField(verbose_name="Tour Date")

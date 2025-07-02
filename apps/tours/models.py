@@ -36,8 +36,8 @@ class Tour(models.Model):
 class TourAgePrice(models.Model):
     tour = models.ForeignKey(Tour, verbose_name=_("Tour"), on_delete=models.PROTECT)
     name = models.CharField(_("Name"), max_length=100)
-    min_age = models.FloatField(_("Minimum Age"))
-    max_age = models.FloatField(_("Maximum Age"))
+    min_age = models.FloatField(_("Minimum Age"), null=True, blank=True)
+    max_age = models.FloatField(_("Maximum Age"), null=True, blank=True)
     price = models.DecimalField(_("Price"), max_digits=28, decimal_places=2, default=0)
     currency = models.ForeignKey(
         Currency, verbose_name=_("Currency"), on_delete=models.PROTECT, null=True, blank=True
