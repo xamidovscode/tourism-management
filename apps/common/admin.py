@@ -59,7 +59,9 @@ def custom_index(request, extra_context=None):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse(chart_data)
 
+    sales = Sale.objects.all()
     extra_context.update({
+        'sales': sales,
         'chart_data': json.dumps(chart_data),
         'selected_month': selected_month,
         'selected_year': selected_year,
