@@ -52,4 +52,8 @@ class CustomUser(AbstractUser):
     def save(self, *args, **kwargs):
         if not self.password.startswith('pbkdf2_sha256'):
             self.set_password(self.password)
+
+        if not self.is_staff:
+            self.is_staff = True
+
         super(CustomUser, self).save(*args, **kwargs)

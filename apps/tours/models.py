@@ -23,7 +23,7 @@ class Tour(models.Model):
     )
     type = models.ForeignKey(TourType, verbose_name=_("Tour Type"), on_delete=models.PROTECT)
     allotment = models.PositiveIntegerField(_("Allotment(count)"), default=0)
-    duration = models.CharField(_("Duration(days)"), max_length=100)
+    duration = models.IntegerField(_("Duration(days)"),default=0)
     transfer_type = models.ForeignKey(TransferType, verbose_name=_("Transfer Type"), on_delete=models.PROTECT)
     start_sale = models.DateField(_("Start Sale"))
     end_sale = models.DateField(_("End Sale"))

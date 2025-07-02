@@ -13,9 +13,8 @@ class CustomerAdmin(RestrictedAdmin):
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
         result = []
-        sales = Sale.objects.filter(
-            customer=object_id,
-        )
+        customer = Customer.objects.get(pk=object_id)
+        sales = Sale.objects.filter(description__icontains=customer.phone_number)
 
         for sale in sales:
             result.append(
