@@ -59,18 +59,33 @@ def custom_index(request, extra_context=None):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse(chart_data)
 
-    sales = Sale.objects.all()
-    extra_context.update({
-        'sales': sales,
-        'chart_data': json.dumps(chart_data),
-        'selected_month': selected_month,
-        'selected_year': selected_year,
-        'total_orders': sum(chart_data['orders']),
-        'total_users': 1234,  # real ma'lumot bilan almashtiring
-        'total_price_sum': sum(chart_data['total_prices']),
-        'total_user_revenue': sum(chart_data['revenues']),
-        'total_benefit_revenue': 1000.00,  # kerakli formulaga moslashtiring
-    })
+    user = request.user
+
+    if user.is_superuser or getattr(user, 'role', None) == 'admin':
+        sales = Sale.objects.all()
+        extra_context.update({
+            'sales': sales,
+            'chart_data': json.dumps(chart_data),
+            'selected_month': selected_month,
+            'selected_year': selected_year,
+            'total_orders': sum(chart_data['orders']),
+            'total_users': 1234,
+            'total_price_sum': sum(chart_data['total_prices']),
+            'total_user_revenue': sum(chart_data['revenues']),
+            'total_benefit_revenue': 1000.00,
+        })
+    else:
+        extra_context.update({
+            'sales': None,
+            'chart_data': None,
+            'selected_month': None,
+            'selected_year': None,
+            'total_orders': None,
+            'total_users': None,
+            'total_price_sum': None,
+            'total_user_revenue': None,
+            'total_benefit_revenue': None,
+        })
 
     return original_index(request, extra_context)
 
