@@ -1,22 +1,45 @@
+import calendar
 import json
+from decimal import Decimal
+from datetime import datetime
 
 from django.contrib import admin
 from django.http.response import JsonResponse
 
 from helpers.custom_admin import RestrictedAdmin
 from .models import *
+from ..sales.models import Sale
 
 admin.site.index_template = 'admin/customers/admin_index.html'
 original_index = admin.site.index
 
 
-def get_chart_data(filters=None):
-    # TODO: Add real data fetching based on filters
-    # Example:
-    labels = [str(i) for i in range(1, 31)]
-    orders = [5, 10, 8, 12, 7, 9, 14, 6, 10, 11, 9, 7, 12, 15, 10, 9, 11, 13, 10, 8, 9, 7, 6, 11, 14, 10, 12, 9, 8, 7]
-    revenues = [100, 200, 150, 300, 220, 180, 250, 190, 210, 240, 200, 180, 300, 320, 250, 210, 230, 260, 240, 190, 220, 180, 170, 230, 310, 260, 290, 220, 210, 180]
-    total_prices = [120, 220, 180, 320, 240, 200, 270, 210, 230, 260, 220, 200, 320, 340, 270, 230, 250, 280, 260, 210, 240, 200, 190, 240, 320, 270, 300, 230, 220, 190]
+
+def get_chart_data(month=None, year=None):
+    today = datetime.today()
+    year = year or today.year
+    month = month or today.month
+
+    days_in_month = calendar.monthrange(year, month)[1]
+
+    labels = [str(day) for day in range(1, days_in_month + 1)]
+    orders = [0] * days_in_month
+    revenues = [0] * days_in_month
+    total_prices = [0] * days_in_month
+
+    sales = Sale.objects.filter(
+        processed_at__year=year,
+        processed_at__month=month
+    )
+
+    for day in range(1, days_in_month + 1):
+        daily_sales = [s for s in sales if s.processed_at.day == day]
+        orders[day - 1] = len(daily_sales)
+        day_total = Decimal(0)
+        for s in daily_sales:
+            day_total += s.tour_amount
+        revenues[day - 1] = float(day_total)
+        total_prices[day - 1] = float(day_total)
 
     return {
         'labels': labels,
@@ -28,33 +51,29 @@ def get_chart_data(filters=None):
 def custom_index(request, extra_context=None):
     extra_context = extra_context or {}
 
-    # Assume fetching from DB or cache here
-    chart_data = get_chart_data()
+    selected_month = int(request.GET.get('month', datetime.today().month))
+    selected_year = int(request.GET.get('year', datetime.today().year))
+
+    chart_data = get_chart_data(month=selected_month, year=selected_year)
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse(chart_data)
 
-    # Example static data - replace with real data counts
     extra_context.update({
-        'categories': [],  # Provide real categories list from DB
-        'user_levels': ["Gold", "Platinum", "Diamond"],
-        'users': [],  # Provide real user list
         'chart_data': json.dumps(chart_data),
-        'selected_month': 7,  # current month example
-        'selected_year': 2025,
-        'selected_category_id': '',
-        'selected_user_type': '',
-        'selected_user_id': '',
+        'selected_month': selected_month,
+        'selected_year': selected_year,
         'total_orders': sum(chart_data['orders']),
-        'total_users': 1234,  # replace with real data
+        'total_users': 1234,  # real ma'lumot bilan almashtiring
         'total_price_sum': sum(chart_data['total_prices']),
         'total_user_revenue': sum(chart_data['revenues']),
-        'total_benefit_revenue': 1000.00,  # placeholder
+        'total_benefit_revenue': 1000.00,  # kerakli formulaga moslashtiring
     })
 
     return original_index(request, extra_context)
 
 admin.site.index = custom_index
+
 
 
 @admin.register(TourType)

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic.base import RedirectView
 
-from apps.sales.views import export_pdf, export_excel
+from apps.sales.views import export_pdf, export_excel, sale_list
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('test/export-pdf/<int:pk>/', export_pdf, name='export_pdf'),
     path('test/export-excel/<int:pk>/', export_excel, name='export_excel'),
+    path('sales/', sale_list, name='sale_list'),
     # path('i18n/', include('django.conf.urls.i18n')),
 ]
 

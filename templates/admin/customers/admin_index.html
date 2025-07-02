@@ -246,6 +246,74 @@
     color: #e2e8f0;
 }
 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+th {
+    background-color: #ffffff;
+    color: #34495e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+tr {
+    transition: background-color 0.2s ease;
+}
+
+tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
+}
+
+td {
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+td:first-child {
+    font-weight: 500;
+    color: #2980b9; /* Ozgina ko'k rang yozuvga */
+}
+
+.empty {
+    color: #bdc3c7;
+    font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+    th, td {
+        min-width: 130px;
+        padding: 8px;
+    }
+    th {
+        font-size: 11px;
+    }
+}
+
 [data-theme="dark"] .select2-container--default .select2-search--dropdown .select2-search__field {
     background-color: #2d3748;
     border-color: #718096;
@@ -314,6 +382,44 @@
     </div>
 </div>
 
+
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Tour</th>
+            <th>Created At</th>
+            <th>Processed At</th>
+            <th>Description</th>
+            <th>Agent</th>
+            <th>Region</th>
+            <th>Hotels</th>
+            <th>Discount</th>
+            <th>Discount Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sale in sales %}
+        <tr>
+            <td>{{ sale.tour }}</td>
+            <td>{{ sale.created_at|date:"Y-m-d H:i" }}</td>
+            <td>{{ sale.processed_at|date:"Y-m-d" }}</td>
+            <td>{{ sale.description|default:"-" }}</td>
+            <td>{{ sale.agent.get_full_name|default:"-" }}</td>
+            <td>{{ sale.region.name|default:"-" }}</td>
+            <td>
+                {% for hotel in sale.hotel.all %}
+                    {{ hotel.name }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    -
+                {% endfor %}
+            </td>
+            <td>{{ sale.discount }}%</td>
+            <td>{{ sale.get_discount_type_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 <!-- JavaScript Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -338,20 +444,20 @@
                     backgroundColor: 'rgba(51, 102, 204, 0.1)',
                     tension: 0.3
                 },
-                {
-                    label: '💰 {% trans "Benefit (USD)" %}',
-                    data: chartData.revenues,
-                    borderColor: '#33AA55',
-                    backgroundColor: 'rgba(51, 170, 85, 0.1)',
-                    tension: 0.3
-                },
-                {
-                    label: '💵 {% trans "Total Price (USD)" %}',
-                    data: chartData.total_prices,
-                    borderColor: '#FF5733',
-                    backgroundColor: 'rgba(255, 87, 51, 0.1)',
-                    tension: 0.3
-                }
+                {#{#}
+                {#    label: '💰 {% trans "Benefit (USD)" %}',#}
+                {#    data: chartData.revenues,#}
+                {#    borderColor: '#33AA55',#}
+                {#    backgroundColor: 'rgba(51, 170, 85, 0.1)',#}
+                {#    tension: 0.3#}
+                {#},#}
+                {#{#}
+                {#    label: '💵 {% trans "Total Price (USD)" %}',#}
+                {#    data: chartData.total_prices,#}
+                {#    borderColor: '#FF5733',#}
+                {#    backgroundColor: 'rgba(255, 87, 51, 0.1)',#}
+                {#    tension: 0.3#}
+                {#}#}
             ]
         },
         options: {
@@ -560,3 +666,5 @@
     observer.observe(document.body, { attributes: true });
 </script>
 {% endblock %}
+
+

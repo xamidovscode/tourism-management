@@ -1,7 +1,9 @@
 from django.http import HttpResponse
+from django.shortcuts import render
 from reportlab.pdfgen import canvas
 from io import BytesIO
-from .models import SoldTours
+from .models import SoldTours, Sale
+
 
 def export_pdf(request, pk):
     sale = SoldTours.objects.get(pk=pk)
@@ -35,3 +37,6 @@ def export_excel(request, pk):
 
 
 
+def sale_list(request):
+    sales = Sale.objects.all()
+    return render(request, 'sales/sale_list.html', {'sales': sales})
