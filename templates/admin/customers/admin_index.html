@@ -294,41 +294,41 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="filter-group">
-                <label for="categoryFilter">{% trans 'Category' %}</label>
-                <select id="categoryFilter" class="form-control">
-                    <option value="">{% trans 'All Categories' %}</option>
-                    {% for category in categories %}
-                        <option value="{{ category.id }}" {% if selected_category_id|add:"0" == category.id|add:"0" %}selected{% endif %}>
-                            {{ category.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="userLevelFilter">{% trans 'User Level' %}</label>
-                <select id="userLevelFilter" class="form-control">
-                    <option value="">{% trans 'All Levels' %}</option>
-                    {% for level in user_levels %}
-                        <option value="{{ level }}" {% if selected_user_type == level %}selected{% endif %}>
-                            {{ level|title }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="userFilter">{% trans 'Selected User' %}</label>
-
-                <select id="userFilter" class="form-control" style="width: 200px;">
-                    <option value="">{% trans 'All Users' %}</option>
-                    {% for user in users %}
-                        <option value="{{ user.id }}" {% if selected_user_id|add:"0" == user.id|add:"0" %}selected{% endif %}>
-                            {{ user.fullname|default:user.fullname }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
+{#            <div class="filter-group">#}
+{#                <label for="categoryFilter">{% trans 'Category' %}</label>#}
+{#                <select id="categoryFilter" class="form-control">#}
+{#                    <option value="">{% trans 'All Categories' %}</option>#}
+{#                    {% for category in categories %}#}
+{#                        <option value="{{ category.id }}" {% if selected_category_id|add:"0" == category.id|add:"0" %}selected{% endif %}>#}
+{#                            {{ category.name }}#}
+{#                        </option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+{#            </div>#}
+{#            <div class="filter-group">#}
+{#                <label for="userLevelFilter">{% trans 'User Level' %}</label>#}
+{#                <select id="userLevelFilter" class="form-control">#}
+{#                    <option value="">{% trans 'All Levels' %}</option>#}
+{#                    {% for level in user_levels %}#}
+{#                        <option value="{{ level }}" {% if selected_user_type == level %}selected{% endif %}>#}
+{#                            {{ level|title }}#}
+{#                        </option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+{#            </div>#}
+{#            <div class="filter-group">#}
+{#                <label for="userFilter">{% trans 'Selected User' %}</label>#}
+{##}
+{#                <select id="userFilter" class="form-control" style="width: 200px;">#}
+{#                    <option value="">{% trans 'All Users' %}</option>#}
+{#                    {% for user in users %}#}
+{#                        <option value="{{ user.id }}" {% if selected_user_id|add:"0" == user.id|add:"0" %}selected{% endif %}>#}
+{#                            {{ user.fullname|default:user.fullname }}#}
+{#                        </option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+{#            </div>#}
+{#        </div>#}
         <!-- Chart -->
         <canvas id="orderChart" height="300"></canvas>
     </div>
