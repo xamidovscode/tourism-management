@@ -95,6 +95,9 @@ class TourProxyAdmin(RestrictedAdmin):
     )
     search_fields = ("name", )
 
+    def has_view_permission(self, request, obj=None):
+        return True
+
     def has_change_permission(self, request, obj=None):
         return False
 

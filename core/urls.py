@@ -5,7 +5,6 @@ from django.conf.urls.static import static
 from django.views.generic.base import RedirectView
 
 from apps.sales.views import export_pdf, export_excel
-from core.admin import admin_site
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
