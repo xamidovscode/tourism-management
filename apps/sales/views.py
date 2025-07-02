@@ -32,3 +32,6 @@ def export_excel(request, pk):
     sale = SoldTours.objects.get(pk=pk)
     # 👇 replace with your actual export logic
     return HttpResponse(f"Excel export for sale ID {pk}")
+
+
+
