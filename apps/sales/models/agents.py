@@ -72,14 +72,15 @@ class SaleAgePrice(models.Model):
         on_delete=models.PROTECT,
         related_name="age_prices",
     )
-    age_price = models.ForeignKey(
-        'tours.TourAgePrice',
-        on_delete=models.PROTECT,
-    )
     customer = models.ForeignKey(
         Customer,
         on_delete=models.PROTECT,
     )
+    age_price = models.ForeignKey(
+        'tours.TourAgePrice',
+        on_delete=models.PROTECT,
+    )
+
 
 
 class SaleExtraPrice(models.Model):
@@ -88,12 +89,12 @@ class SaleExtraPrice(models.Model):
         on_delete=models.PROTECT,
         related_name="extra_prices",
     )
-    extra_price = models.ForeignKey(
-        'tours.TourExtraPrice',
-        on_delete=models.PROTECT,
-    )
     customer = models.ForeignKey(
         Customer,
+        on_delete=models.PROTECT,
+    )
+    extra_price = models.ForeignKey(
+        'tours.TourExtraPrice',
         on_delete=models.PROTECT,
     )
 
