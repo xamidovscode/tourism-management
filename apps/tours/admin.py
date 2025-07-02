@@ -38,10 +38,10 @@ class TourExtraPriceInline(admin.TabularInline):
 class TourAdmin(RestrictedAdmin):
     inlines = (TourAgeInline, TourExtraPriceInline)
     list_display = (
-        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'concept', 'transfer_type', 'price_by_age'
+        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'hotel', 'concept', 'transfer_type', 'price_by_age'
     )
     list_display_links = (
-        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'concept', 'transfer_type', 'price_by_age'
+        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'hotel', 'concept', 'transfer_type', 'price_by_age'
     )
     list_filter = (
         "is_pickup", 'concept', 'type', 'transfer_type', "supplier",

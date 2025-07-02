@@ -7,7 +7,7 @@ __all__ = (
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.common.models import TourType, TransferType, Currency
+from apps.common.models import TourType, TransferType, Currency, Hotel
 from helpers.choices import (
     TourConceptChoice,
 )
@@ -21,6 +21,7 @@ class Tour(models.Model):
     concept = models.CharField(
         choices=TourConceptChoice, default=TourConceptChoice.STANDARD, verbose_name=_("Concept")
     )
+    hotel = models.ForeignKey(Hotel, related_name="tours", on_delete=models.PROTECT)
     type = models.ForeignKey(TourType, verbose_name=_("Tour Type"), on_delete=models.PROTECT)
     allotment = models.PositiveIntegerField(_("Allotment(count)"), default=0)
     duration = models.IntegerField(_("Duration(days)"),default=0)
