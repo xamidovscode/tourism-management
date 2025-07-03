@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
 
 from helpers.custom_admin import RestrictedAdmin
 from apps.sales.models import (
@@ -33,19 +35,16 @@ class SaleProxyAdmin(RestrictedAdmin):
         "tour", "processed_at", "agent"
     )
 
+
     def export_buttons(self, obj):
-
-        from django.utils.html import format_html
-        from django.urls import reverse
-
         pdf_url = reverse('export_pdf', args=[obj.pk])
         excel_url = reverse('export_excel', args=[obj.pk])
-
         return format_html(
-            '<a class="button" href="{}" title="Export PDF">🗂</a>&nbsp;'
-            '<a class="button" href="{}" title="Export Excel">📊</a>',
+            '<a class="button" href="{}" title="Export PDF">🗂 PDF</a>&nbsp;'
+            '<a class="button" href="{}" title="Export Excel">📊 Excel</a>',
             pdf_url, excel_url
         )
+
 
     export_buttons.short_description = "Export"
     export_buttons.admin_order_field = 'export_buttons'
