@@ -25,88 +25,93 @@ def sale_list(request):
 def export_pdf(request, pk):
     sale = SoldTours.objects.get(pk=pk)
 
-    # PDF settings
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="SoldTour_{sale.pk}.pdf"'
 
-    doc = SimpleDocTemplate(response, pagesize=A4,
-                            rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=30)
+    doc = SimpleDocTemplate(
+        response,
+        pagesize=(80 * mm, 250 * mm),  # narrow receipt size
+        rightMargin=5,
+        leftMargin=5,
+        topMargin=10,
+        bottomMargin=10
+    )
 
     styles = getSampleStyleSheet()
     elements = []
 
-    # Custom styles
+    # Styles
     title_style = ParagraphStyle(
-        name='TitleStyle',
-        parent=styles['Title'],
-        fontSize=16,
+        name='Title',
+        fontSize=12,
+        leading=14,
         alignment=TA_CENTER,
-        textColor=colors.darkblue,
-    )
-
-    label_style = ParagraphStyle(
-        name='LabelStyle',
-        parent=styles['Normal'],
-        fontSize=10,
-        alignment=TA_LEFT,
         textColor=colors.black,
     )
 
-    footer_style = ParagraphStyle(
-        name='FooterStyle',
-        parent=styles['Normal'],
-        fontSize=9,
-        alignment=TA_CENTER,
-        textColor=colors.grey,
+    normal_style = ParagraphStyle(
+        name='Normal',
+        fontSize=8,
+        leading=10,
+        alignment=TA_LEFT
     )
 
-    # 🧾 Title
-    elements.append(Paragraph("🏝 <b>DUBAI TOUR AGENCY</b>", title_style))
-    elements.append(Paragraph("<b>SALES RECEIPT</b>", title_style))
-    elements.append(Spacer(1, 10))
+    center_style = ParagraphStyle(
+        name='Center',
+        fontSize=8,
+        alignment=TA_CENTER,
+        leading=10
+    )
 
-    # 🔖 Meta info (ID, Date)
-    elements.append(Paragraph(f"<b>Receipt ID:</b> #{sale.pk}", label_style))
-    elements.append(Paragraph(f"<b>Date:</b> {sale.created_at.strftime('%d-%m-%Y %H:%M')}", label_style))
-    elements.append(Spacer(1, 10))
+    bold_style = ParagraphStyle(
+        name='Bold',
+        fontSize=9,
+        alignment=TA_LEFT,
+        leading=11,
+        textColor=colors.black
+    )
 
-    # 📋 Main Info Table
-    data = [
-        ["Tour:", str(sale.tour)],
-        ["Agent:", str(sale.agent)],
-        ["Processed At:", sale.processed_at.strftime('%Y-%m-%d') if sale.processed_at else "-"],
-        ["Description:", sale.description or "-"],
-        ["Discount:", f"{sale.discount}"],
-        ["Discount Type:", sale.discount_type or "-"],
+    # Header
+    elements.append(Paragraph("<b>DUBAI TOUR AGENCY</b>", title_style))
+    elements.append(Paragraph("SALES RECEIPT", center_style))
+    elements.append(Spacer(1, 4))
+
+    # Meta
+    elements.append(Paragraph(f"Receipt ID: #{sale.pk}", normal_style))
+    elements.append(Paragraph(f"Date: {sale.created_at.strftime('%d-%m-%Y %H:%M')}", normal_style))
+    elements.append(Spacer(1, 6))
+
+    # Sale info table
+    info_data = [
+        ["Tour", str(sale.tour)],
+        ["Agent", str(sale.agent)],
+        ["Processed At", sale.processed_at.strftime('%Y-%m-%d') if sale.processed_at else "-"],
+        ["Description", sale.description or "-"],
+        ["Discount", f"{sale.discount}"],
+        ["Discount Type", sale.discount_type or "-"],
     ]
 
-    table = Table(data, colWidths=[40 * mm, 120 * mm])
+    table = Table(info_data, colWidths=[28 * mm, 42 * mm])
     table.setStyle(TableStyle([
-        ('BOX', (0, 0), (-1, -1), 1.2, colors.black),
-        ('INNERGRID', (0, 0), (-1, -1), 0.6, colors.grey),
-        ('BACKGROUND', (0, 0), (-1, 0), colors.lightblue),
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('FONTSIZE', (0, 0), (-1, -1), 8),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('LINEBELOW', (0, 0), (-1, -1), 0.2, colors.grey),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
     ]))
-
     elements.append(table)
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 10))
 
-    # ✅ Footer note
+    # Footer
     footer = Paragraph(
-        "Thank you for choosing Dubai Tour Agency! <br/> "
-        "If you have any questions, contact us at: support@dubaitour.com",
-        footer_style
+        "Thanks for choosing us!<br/>Contact: support@dubaitour.com",
+        center_style
     )
     elements.append(footer)
 
-    # Generate PDF
     doc.build(elements)
     return response
+
 
 def export_excel(request, pk):
     sale = SoldTours.objects.get(pk=pk)
