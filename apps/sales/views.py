@@ -3,12 +3,8 @@ from openpyxl.styles.fills import PatternFill
 from openpyxl.styles.fonts import Font
 from openpyxl.workbook.workbook import Workbook
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
-
 from .models import Sale
-
-
 from django.http import HttpResponse
-from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import mm
 from reportlab.platypus import (
@@ -21,6 +17,7 @@ from .models import SoldTours
 def sale_list(request):
     sales = Sale.objects.all()
     return render(request, 'sales/sale_list.html', {'sales': sales})
+
 
 def export_pdf(request, pk):
     sale = SoldTours.objects.get(pk=pk)
@@ -40,7 +37,6 @@ def export_pdf(request, pk):
     styles = getSampleStyleSheet()
     elements = []
 
-    # Styles
     title_style = ParagraphStyle(
         name='Title',
         fontSize=12,
@@ -71,17 +67,14 @@ def export_pdf(request, pk):
         textColor=colors.black
     )
 
-    # Header
     elements.append(Paragraph("<b>DUBAI TOUR AGENCY</b>", title_style))
     elements.append(Paragraph("SALES RECEIPT", center_style))
     elements.append(Spacer(1, 4))
 
-    # Meta
     elements.append(Paragraph(f"Receipt ID: #{sale.pk}", normal_style))
     elements.append(Paragraph(f"Date: {sale.created_at.strftime('%d-%m-%Y %H:%M')}", normal_style))
     elements.append(Spacer(1, 6))
 
-    # Sale info table
     info_data = [
         ["Tour", str(sale.tour)],
         ["Agent", str(sale.agent)],
@@ -102,7 +95,6 @@ def export_pdf(request, pk):
     elements.append(table)
     elements.append(Spacer(1, 10))
 
-    # Footer
     footer = Paragraph(
         "Thanks for choosing us!<br/>Contact: support@dubaitour.com",
         center_style

@@ -1,5 +1,3 @@
-# apps/sales/urls.py
-
 from django.urls import path
 from .views import export_pdf, export_excel
 
