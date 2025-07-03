@@ -250,53 +250,78 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    font-family: 'Arial', sans-serif;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Arial', sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
     overflow: hidden;
-    background-color: #ffffff;
+    background-color: #f9fbff; /* Oqar ko'k-ish fon */
+    transition: box-shadow 0.3s ease;
+}
+
+table:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 th, td {
-    padding: 12px 15px;
+    padding: 14px 16px;
     text-align: left;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #e6e9f0; /* Oqar kulrang chiziq */
 }
 
 th {
-    background-color: #ffffff;
-    color: #34495e;
+    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); /* Oqar ko'k gradient */
+    color: #1e3a8a; /* To'q ko'k matn */
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-size: 13px;
-    font-weight: 600;
+    letter-spacing: 0.8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 tr {
-    transition: background-color 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 tr:nth-child(even) {
-    background-color: #ffffff;
+    background-color: #f0f5ff; /* Juda oqar ko'k */
 }
 
 tr:hover {
-    background-color: #f9f9f9;
+    background-color: #dbeafe; /* Hoverda yorqin ko'k */
+    transform: translateY(-2px);
 }
 
 td {
-    color: #2c3e50;
+    color: #1f2937; /* Yumshoq qora rang */
     font-size: 14px;
+    line-height: 1.5;
 }
 
 td:first-child {
-    font-weight: 500;
-    color: #2980b9; /* Ozgina ko'k rang yozuvga */
+    font-weight: 600;
+    color: #3b82f6; /* Yorqin ko'k */
+    position: relative;
+    padding-left: 20px;
+}
+
+td:first-child::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 20px;
+    background-color: #60a5fa; /* Oqar ko'k chiziq */
+    border-radius: 2px;
 }
 
 .empty {
-    color: #bdc3c7;
+    color: #94a3b8; /* Oqar kulrang bo'sh xujayralar uchun */
     font-style: italic;
+    font-size: 13px;
 }
 
 /* Responsive design */
@@ -304,14 +329,44 @@ td:first-child {
     table {
         display: block;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: #a5b4fc #f0f5ff; /* Oqar ko'k scrollbar */
     }
+
     th, td {
-        min-width: 130px;
-        padding: 8px;
+        min-width: 120px;
+        padding: 10px 12px;
+        font-size: 13px;
     }
+
     th {
         font-size: 11px;
+        background: linear-gradient(135deg, #d1d9ff 0%, #b3c0ff 100%); /* Oqar gradient */
     }
+
+    td:first-child::before {
+        height: 16px;
+    }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f0f5ff; /* Oqar ko'k trek */
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #a5b4fc; /* Oqar ko'k thumb */
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #818cf8; /* Hoverda biroz to'qroq ko'k */
 }
 
 [data-theme="dark"] .select2-container--default .select2-search--dropdown .select2-search__field {
