@@ -15,8 +15,6 @@ urlpatterns = [
     path('test/export-pdf/<int:pk>/', export_pdf, name='export_pdf'),
     path('test/export-excel/<int:pk>/', export_excel, name='export_excel'),
     path('sales/', sale_list, name='sale_list'),
-    # path('export/pdf/<int:pk>/', export_pdf, name='export_pdf'),
-    # path('export/excel/<int:pk>/', export_excel, name='export_excel'),
 
 ]
 

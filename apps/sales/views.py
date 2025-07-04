@@ -1,16 +1,15 @@
+import os
+from datetime import datetime
+import qrcode
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from openpyxl.styles.fills import PatternFill
 from openpyxl.styles.fonts import Font
 from openpyxl.workbook.workbook import Workbook
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from weasyprint import HTML
+from core.settings.base import BASE_DIR
 from .models import Sale
 from django.http import HttpResponse
-from reportlab.lib import colors
-from reportlab.lib.units import mm
-from reportlab.platypus import (
-    SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-)
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from .models import SoldTours
 
 
@@ -21,87 +20,28 @@ def sale_list(request):
 
 def export_pdf(request, pk):
     sale = SoldTours.objects.get(pk=pk)
+    now = datetime.now()
 
-    response = HttpResponse(content_type='application/pdf')
+    qr_data = f"Receipt ID: {sale.pk}, Tour: {sale.tour}, Agent: {sale.agent}"
+    qr_img = qrcode.make(qr_data)
+    qr_path = f"static/qr/qr_{sale.pk}.png"
+    full_qr_path = os.path.join(BASE_DIR, qr_path)
+    os.makedirs(os.path.dirname(full_qr_path), exist_ok=True)
+    qr_img.save(full_qr_path)
+
+    context = {
+        'sale': sale,
+        'current_date': now.strftime('%d-%m-%Y %H:%M'),
+        'processed_date': sale.processed_at.strftime('%d-%m-%Y') if sale.processed_at else '-',
+        'qr_code_url': os.path.join(BASE_DIR, qr_path)
+    }
+
+    html_string = render_to_string('admin/customers/pdf_recaipt.html', context)
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="SoldTour_{sale.pk}.pdf"'
-
-    doc = SimpleDocTemplate(
-        response,
-        pagesize=(80 * mm, 250 * mm),  # narrow receipt size
-        rightMargin=5,
-        leftMargin=5,
-        topMargin=10,
-        bottomMargin=10
-    )
-
-    styles = getSampleStyleSheet()
-    elements = []
-
-    title_style = ParagraphStyle(
-        name='Title',
-        fontSize=12,
-        leading=14,
-        alignment=TA_CENTER,
-        textColor=colors.black,
-    )
-
-    normal_style = ParagraphStyle(
-        name='Normal',
-        fontSize=8,
-        leading=10,
-        alignment=TA_LEFT
-    )
-
-    center_style = ParagraphStyle(
-        name='Center',
-        fontSize=8,
-        alignment=TA_CENTER,
-        leading=10
-    )
-
-    bold_style = ParagraphStyle(
-        name='Bold',
-        fontSize=9,
-        alignment=TA_LEFT,
-        leading=11,
-        textColor=colors.black
-    )
-
-    elements.append(Paragraph("<b>DUBAI TOUR AGENCY</b>", title_style))
-    elements.append(Paragraph("SALES RECEIPT", center_style))
-    elements.append(Spacer(1, 4))
-
-    elements.append(Paragraph(f"Receipt ID: #{sale.pk}", normal_style))
-    elements.append(Paragraph(f"Date: {sale.created_at.strftime('%d-%m-%Y %H:%M')}", normal_style))
-    elements.append(Spacer(1, 6))
-
-    info_data = [
-        ["Tour", str(sale.tour)],
-        ["Agent", str(sale.agent)],
-        ["Processed At", sale.processed_at.strftime('%Y-%m-%d') if sale.processed_at else "-"],
-        ["Description", sale.description or "-"],
-        ["Discount", f"{sale.discount}"],
-        ["Discount Type", sale.discount_type or "-"],
-    ]
-
-    table = Table(info_data, colWidths=[28 * mm, 42 * mm])
-    table.setStyle(TableStyle([
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 8),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('LINEBELOW', (0, 0), (-1, -1), 0.2, colors.grey),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
-    ]))
-    elements.append(table)
-    elements.append(Spacer(1, 10))
-
-    footer = Paragraph(
-        "Thanks for choosing us!<br/>Contact: support@dubaitour.com",
-        center_style
-    )
-    elements.append(footer)
-
-    doc.build(elements)
     return response
 
 

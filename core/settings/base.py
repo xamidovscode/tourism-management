@@ -3,8 +3,8 @@ from pathlib import Path
 from decouple import config
 from ..jazzmin_settings import *
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
 
 SECRET_KEY = config('SECRET_KEY', default='some-secret-key', cast=str)
 DEBUG = config('DEBUG', default=False, cast=bool)
