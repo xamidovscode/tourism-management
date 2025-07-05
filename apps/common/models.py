@@ -79,4 +79,3 @@ class  Child(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.min_age}–{self.max_age} y)"
-
