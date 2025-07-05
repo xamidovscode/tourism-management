@@ -34,6 +34,8 @@ JAZZMIN_SETTINGS = {
         "common.TransferType": "fas fa-exchange-alt",
         "common.Currency": "fas fa-dollar-sign",
         "common.Hotel": "fas fa-hotel",
+        "common.Adult": "fas fa-child",
+        "common.Child": "fas fa-child",
         "common.Market": "fas fa-globe",
 
         "tours.Tour": "fas fa-route",

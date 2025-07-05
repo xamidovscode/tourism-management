@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from apps.common.models import Adult, Child
 from apps.sales.models import Customer
 from apps.tours.models import Tour
 from helpers.choices import SaleDiscountChoice
@@ -12,7 +13,7 @@ class Sale(models.Model):
 
     tour = models.ForeignKey(
         "tours.Tour",  on_delete=models.PROTECT,
-        verbose_name='Tour'
+        verbose_name='Tour Name'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     processed_at = models.DateField(verbose_name="Tour Date")
@@ -25,6 +26,9 @@ class Sale(models.Model):
             "status": "agent"
         }
     )
+    pick_up_time = models.TimeField(verbose_name="Pickup Time", null=True)
+    area = models.CharField(verbose_name='Area', max_length=255, null=True)
+    total_max = models.PositiveIntegerField(verbose_name='Total Max', default=0)
     region = models.ForeignKey(
         'common.Region',
         on_delete=models.PROTECT,
@@ -32,6 +36,16 @@ class Sale(models.Model):
     )
     hotel = models.ManyToManyField(
         'common.Hotel',
+    )
+    adult = models.ForeignKey(
+        Adult,
+        on_delete=models.PROTECT,
+        null=True
+    )
+    child = models.ForeignKey(
+        Child,
+        on_delete=models.PROTECT,
+        null=True
     )
     discount = models.PositiveIntegerField(
         default=0,

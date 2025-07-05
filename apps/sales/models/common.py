@@ -8,9 +8,7 @@ class Customer(models.Model):
     phone_number = models.CharField(
         max_length=255
     )
-    age = models.IntegerField(
-        default=0,
-    )
+    birth_date = models.DateField(verbose_name='Birth date', null=True, blank=True)
     passport = models.CharField(
         max_length=255, null=True, blank=True
     )
@@ -20,6 +18,6 @@ class Customer(models.Model):
         return (
                 self.full_name + " | " +
                 str(self.phone_number[4:]) + " | age " +
-                str(self.age) + " | " +
+                str(self.birth_date) + " | " +
                 str(self.passport if self.passport else "")
         )

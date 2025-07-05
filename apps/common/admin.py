@@ -8,11 +8,11 @@ from django.http.response import JsonResponse
 
 from helpers.custom_admin import RestrictedAdmin
 from .models import *
-from ..sales.models import Sale
+from ..sales.models import Sale, Customer
+from ..tours.admin import TourAgeInline
 
 admin.site.index_template = 'admin/customers/admin_index.html'
 original_index = admin.site.index
-
 
 
 def get_chart_data(month=None, year=None):
@@ -74,18 +74,6 @@ def custom_index(request, extra_context=None):
             'total_user_revenue': sum(chart_data['revenues']),
             'total_benefit_revenue': 1000.00,
         })
-    else:
-        extra_context.update({
-            'sales': None,
-            'chart_data': None,
-            'selected_month': None,
-            'selected_year': None,
-            'total_orders': None,
-            'total_users': None,
-            'total_price_sum': None,
-            'total_user_revenue': None,
-            'total_benefit_revenue': None,
-        })
 
     return original_index(request, extra_context)
 
@@ -122,4 +110,29 @@ class TourTypeAdmin(RestrictedAdmin):
 class RegionAdmin(RestrictedAdmin):
     list_display = ("id", "name")
 
+
+@admin.register(Adult)
+class AdultAdmin(RestrictedAdmin):
+    list_display = ("id", "name", "min_age", "max_age")
+    list_display_links = ("id", "name", "min_age", "max_age")
+
+    def get_changeform_initial_data(self, request):
+        return {
+            'name': 'Min Adult Age',
+            'min_age': 0,
+            'max_age': 1.99,
+        }
+
+
+@admin.register(Child)
+class ChildAdmin(RestrictedAdmin):
+    list_display = ("id", "name", "min_age", "max_age")
+    list_display_links = ("id", "name", "min_age", "max_age")
+
+    def get_changeform_initial_data(self, request):
+        return {
+            'name': 'Min Child Age',
+            'min_age': 6,
+            'max_age': 11.99,
+        }
 

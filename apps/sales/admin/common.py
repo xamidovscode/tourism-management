@@ -1,13 +1,12 @@
 from django.contrib import admin
-
 from helpers.custom_admin import RestrictedAdmin
 from ..models import *
 
 
 @admin.register(Customer)
 class CustomerAdmin(RestrictedAdmin):
-    list_display = ('id', 'full_name', 'phone_number', "age", "passport")
-    list_display_links = ('id', 'full_name', 'phone_number', "age", "passport")
+    list_display = ('id', 'full_name', 'phone_number', "birth_date", "passport")
+    list_display_links = ('id', 'full_name', 'phone_number', "birth_date", "passport")
     change_form_template = 'admin/customers/customer_detail.html'
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
