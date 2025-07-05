@@ -8,8 +8,7 @@ from django.http.response import JsonResponse
 
 from helpers.custom_admin import RestrictedAdmin
 from .models import *
-from ..sales.models import Sale, Customer
-from ..tours.admin import TourAgeInline
+from ..sales.models import Sale
 
 admin.site.index_template = 'admin/customers/admin_index.html'
 original_index = admin.site.index
@@ -78,7 +77,6 @@ def custom_index(request, extra_context=None):
     return original_index(request, extra_context)
 
 admin.site.index = custom_index
-
 
 
 @admin.register(TourType)

@@ -10,7 +10,6 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
 
     path('admin/', admin.site.urls),
-    # path('admin/', admin_site.urls),
 
     path('test/export-pdf/<int:pk>/', export_pdf, name='export_pdf'),
     path('test/export-excel/<int:pk>/', export_excel, name='export_excel'),
