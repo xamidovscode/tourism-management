@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -59,32 +59,35 @@ class Sale(models.Model):
         verbose_name = "My Sold Tours"
         verbose_name_plural = "My Sold Tours"
 
-
     @property
     def base_price(self):
         """Age + Extra narx (chegirmasiz, servis to‘lovsiz)"""
         extra = self.extra_prices.aggregate(
             amount=models.Sum('extra_price__price')
         )['amount'] or Decimal("0")
+
         age = self.age_prices.aggregate(
             amount=models.Sum('age_price__price')
         )['amount'] or Decimal("0")
+
         return extra + age
 
     @property
-    def price_with_service_fee(self):
-        """1.5% qo‘shilgan narx"""
-        return round(self.base_price * Decimal("0.015"))
+    def service_fee(self):
+        """1.5% servis to‘lovi faqat"""
+        return (self.base_price * Decimal("0.015")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
     @property
     def total_amount(self):
-        """Chegirma qo‘llangan yakuniy narx"""
-        total = self.price_with_service_fee
+        """Chegirma qo‘llangan yakuniy narx (base + service - discount)"""
+        total = self.base_price + self.service_fee
 
         if self.discount_type == "percentage" and self.discount > 0:
-            return round(total - (total * (Decimal(self.discount) / Decimal("100"))), 2)
+            discount_amount = total * (Decimal(self.discount) / Decimal("100"))
         else:
-            return round(total - Decimal(self.discount), 2)
+            discount_amount = Decimal(self.discount)
+
+        return (total - discount_amount).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
     # @property
     # def tour_amount(self):
