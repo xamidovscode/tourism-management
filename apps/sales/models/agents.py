@@ -59,8 +59,9 @@ class Sale(models.Model):
         verbose_name = "My Sold Tours"
         verbose_name_plural = "My Sold Tours"
 
+
     @property
-    def tour_amount(self):
+    def total_amount(self):
         extra_price = self.extra_prices.aggregate(
             amount=models.Sum('extra_price__price')
         )['amount'] or Decimal("0")
@@ -73,12 +74,9 @@ class Sale(models.Model):
 
         total_with_fee = total + (total * Decimal("0.015"))
 
-        if self.discount_type == "percentage" and self.discount > 0:
-            discounted = total_with_fee - (total_with_fee * (Decimal(self.discount) / Decimal("100")))
-            return round(discounted, 2)
-        else:
-            return round(total_with_fee - Decimal(self.discount), 2)
+        return round(total_with_fee, 2)
 
+    # @property
     # def tour_amount(self):
     #     extra_price = self.extra_prices.all().aggregate(
     #         amount=models.Sum('extra_price__price')
