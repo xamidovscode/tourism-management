@@ -59,6 +59,7 @@ class Sale(models.Model):
         verbose_name = "My Sold Tours"
         verbose_name_plural = "My Sold Tours"
 
+    @property
     def tour_amount(self):
         extra_price = self.extra_prices.aggregate(
             amount=models.Sum('extra_price__price')
@@ -78,7 +79,6 @@ class Sale(models.Model):
         else:
             return round(total_with_fee - Decimal(self.discount), 2)
 
-    # @property
     # def tour_amount(self):
     #     extra_price = self.extra_prices.all().aggregate(
     #         amount=models.Sum('extra_price__price')
