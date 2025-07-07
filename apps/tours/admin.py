@@ -115,15 +115,20 @@ class TourAgePriceAdmin(RestrictedAdmin):
     )
     list_filter = ("tour", "currency")
 
-
     def get_name(self, obj):
         return obj.adult.name if obj.adult else "❌"
+
     get_name.short_description = "Name"
+    get_name.admin_order_field = 'adult__name'
 
     def get_min_age(self, obj):
         return obj.adult.min_age if obj.adult else "-"
+
     get_min_age.short_description = "Min Age"
+    get_min_age.admin_order_field = 'adult__min_age'
 
     def get_max_age(self, obj):
         return obj.adult.max_age if obj.adult else "-"
+
     get_max_age.short_description = "Max Age"
+    get_max_age.admin_order_field = 'adult__max_age'
