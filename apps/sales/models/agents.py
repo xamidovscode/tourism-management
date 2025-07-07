@@ -74,7 +74,7 @@ class Sale(models.Model):
     @property
     def price_with_service_fee(self):
         """1.5% qo‘shilgan narx"""
-        return round(self.base_price + (self.base_price * Decimal("0.015")), 2)
+        return round(self.base_price * Decimal("0.015"))
 
     @property
     def total_amount(self):
