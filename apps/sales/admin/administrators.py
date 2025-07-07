@@ -34,7 +34,7 @@ class SaleProxyAdmin(RestrictedAdmin):
         "id", "created_at", "tour", "processed_at", "agent", 'description', 'discount', 'discount_type'
     )
     list_filter = (
-        "agent",
+        "tour", "agent",
         ("processed_at", DateRangeFilter),
     )
 
