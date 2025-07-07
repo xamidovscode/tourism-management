@@ -36,7 +36,7 @@ def get_chart_data(month=None, year=None):
         orders[day - 1] = len(daily_sales)
         day_total = Decimal(0)
         for s in daily_sales:
-            day_total += s.tour_amount
+            day_total += 0
         revenues[day - 1] = float(day_total)
         total_prices[day - 1] = float(day_total)
 
