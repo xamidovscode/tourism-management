@@ -20,10 +20,20 @@ class TourAgeInline(admin.TabularInline):
 
     def wrap_init(self, original_init):
         def new_init(formset_self, *args, **kwargs):
+            from apps.tours.models import Adult  # import qilib qo‘yamiz
+            try:
+                infant = Adult.objects.get(name__icontains='Infant')
+                toddler = Adult.objects.get(name__icontains='Toodle')
+                child = Adult.objects.get(name__icontains='Child')
+            except Adult.DoesNotExist:
+                kwargs['initial'] = []
+                original_init(formset_self, *args, **kwargs)
+                return
+
             kwargs['initial'] = [
-                {'name': 'Min infant Age', 'min_age': 0, 'max_age': 1.99, 'price': 0},
-                {'name': 'Min Toodle Age', 'min_age': 2, 'max_age': 5.99, 'price': 0},
-                {'name': 'Min Child Age', 'min_age': 6, 'max_age': 11.99, 'price': 0},
+                {'adult': infant, 'price': 0},
+                {'adult': toddler, 'price': 0},
+                {'adult': child, 'price': 0},
             ]
             original_init(formset_self, *args, **kwargs)
         return new_init
@@ -41,7 +51,7 @@ class TourAdmin(RestrictedAdmin):
         "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'hotel', 'concept', 'transfer_type', 'price_by_age'
     )
     list_display_links = (
-        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'hotel','concept', 'transfer_type', 'price_by_age'
+        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'hotel', 'concept', 'transfer_type', 'price_by_age'
     )
     list_filter = (
         "is_pickup", 'concept', 'type', 'transfer_type', "supplier",
@@ -54,58 +64,65 @@ class TourAdmin(RestrictedAdmin):
         result = ""
 
         for age_price in TourAgePrice.objects.filter(tour=obj):
-            result += str(str(age_price.name) + " - " + str(age_price.price) + f" {age_price.currency.name if age_price.currency else ' nomalum'}" + "<br>")
+            if age_price.adult:
+                name = age_price.adult.name
+            else:
+                name = "❌ (no category)"
+
+            currency = age_price.currency.name if age_price.currency else "nomalum"
+
+            result += f"{name} - {age_price.price} {currency}<br>"
+
         return format_html(result)
 
     price_by_age.short_description = "Prices By Age"
-    price_by_age.admin_order_field = "agent"
+    price_by_age.admin_order_field = "id"
 
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)
 
         if not change:
             tour = form.instance
-            default_prices = [
-                {'name': 'Min infant Age', 'min_age': 0, 'max_age': 1.99, 'price': 0},
-                {'name': 'Min Toodle Age', 'min_age': 2, 'max_age': 5.99, 'price': 0},
-                {'name': 'Min Child Age', 'min_age': 6, 'max_age': 11.99, 'price': 0},
-            ]
+            from apps.tours.models import Adult
 
-            for data in default_prices:
-                TourAgePrice.objects.get_or_create(
-                    tour=tour,
-                    name=data['name'],
-                    defaults={
-                        'min_age': data['min_age'],
-                        'max_age': data['max_age'],
-                        'price': data['price'],
-                        'currency': None  # if needed
-                    }
-                )
+            default_names = ['Min infant Age', 'Min Toodle Age', 'Min Child Age']
+            for name in default_names:
+                try:
+                    adult = Adult.objects.get(name=name)
+                    TourAgePrice.objects.get_or_create(
+                        tour=tour,
+                        adult=adult,
+                        defaults={'price': 0, 'currency': None}
+                    )
+                except Adult.DoesNotExist:
+                    continue
 
 
 @admin.register(TourExtraPrice)
 class TourExtraPriceAdmin(RestrictedAdmin):
-    list_display = (
-        "id", "tour", "name", "price", "currency"
-    )
-    list_display_links = (
-        "id", "tour", "name", "price", "currency"
-    )
-
+    list_display = ("id", "tour", "name", "price", "currency")
+    list_display_links = ("id", "tour", "name", "price", "currency")
     list_filter = ("tour", "currency")
 
 
 @admin.register(TourAgePrice)
-class TourExtraPriceAdmin(RestrictedAdmin):
+class TourAgePriceAdmin(RestrictedAdmin):
     list_display = (
-        "id", "tour", "name", "min_age", "max_age", "price", "currency"
+        "id", "tour", "get_name", "get_min_age", "get_max_age", "price", "currency"
     )
     list_display_links = (
-        "id", "tour", "name", "min_age", "max_age", "price", "currency"
+        "id", "tour", "get_name", "get_min_age", "get_max_age", "price", "currency"
     )
     list_filter = ("tour", "currency")
 
+    def get_name(self, obj):
+        return obj.adult.name
+    get_name.short_description = "Name"
 
+    def get_min_age(self, obj):
+        return obj.adult.min_age
+    get_min_age.short_description = "Min Age"
 
-
+    def get_max_age(self, obj):
+        return obj.adult.max_age
+    get_max_age.short_description = "Max Age"

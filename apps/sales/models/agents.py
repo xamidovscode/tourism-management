@@ -76,6 +76,7 @@ class Sale(models.Model):
             return total - self.discount
 
 
+
 class SaleAgePrice(models.Model):
     sale = models.ForeignKey(
         "sales.Sale",

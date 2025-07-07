@@ -113,12 +113,6 @@ class RegionAdmin(RestrictedAdmin):
 class AdultAdmin(RestrictedAdmin):
     list_display = ("id", "name", "min_age", "max_age")
     list_display_links = ("id", "name", "min_age", "max_age")
-
-    def get_changeform_initial_data(self, request):
-        return {
-            'name': 'Min Adult Age',
-            'min_age': 0,
-            'max_age': 1.99,
-        }
+    list_filter = ('id', 'name',)
 
 

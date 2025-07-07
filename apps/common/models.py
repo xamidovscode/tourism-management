@@ -71,3 +71,7 @@ class  Adult(models.Model):
     def __str__(self):
         return f"{self.name} ({self.min_age}–{self.max_age} y)"
 
+    class Meta:
+        verbose_name = _("Adult")
+        verbose_name_plural = _("Adults")
+
