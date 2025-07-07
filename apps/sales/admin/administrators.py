@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+from rangefilter.filters import DateRangeFilter
+
 
 from helpers.custom_admin import RestrictedAdmin
 from apps.sales.models import (
@@ -26,13 +28,14 @@ class SaleProxyAdmin(RestrictedAdmin):
     inlines = (SoldToursAgePriceInline, SoldToursExtraPriceInline)
 
     list_display = (
-        "id", "created_at", "tour", "processed_at", "agent", 'pick_up_time', 'description', 'export_buttons', 'area', 'adult', 'child', 'discount', 'total_max', 'discount_type'
+        "id", "created_at", "tour", "processed_at", "agent", 'pick_up_time', 'description', 'export_buttons', 'area', 'adult', 'discount', 'total_max', 'discount_type'
     )
     list_display_links = (
         "id", "created_at", "tour", "processed_at", "agent", 'description', 'discount', 'discount_type'
     )
     list_filter = (
-        "tour", "processed_at", "agent"
+        "tour", "agent",
+        ("processed_at", DateRangeFilter),
     )
 
 

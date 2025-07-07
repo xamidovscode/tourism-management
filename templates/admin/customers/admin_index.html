@@ -441,37 +441,37 @@ td:first-child::before {
 
     <table class="table table-striped">
     <thead>
-        <tr>
-            <th>Tour</th>
-            <th>Created At</th>
-            <th>Processed At</th>
-            <th>Description</th>
-            <th>Agent</th>
-            <th>Region</th>
-            <th>Hotels</th>
-            <th>Discount</th>
-            <th>Discount Type</th>
-        </tr>
+{#        <tr>#}
+{#            <th>Tour</th>#}
+{#            <th>Created At</th>#}
+{#            <th>Processed At</th>#}
+{#            <th>Description</th>#}
+{#            <th>Agent</th>#}
+{#            <th>Region</th>#}
+{#            <th>Hotels</th>#}
+{#            <th>Discount</th>#}
+{#            <th>Discount Type</th>#}
+{#        </tr>#}
     </thead>
     <tbody>
         {% for sale in sales %}
-        <tr>
-            <td>{{ sale.tour }}</td>
-            <td>{{ sale.created_at|date:"Y-m-d H:i" }}</td>
-            <td>{{ sale.processed_at|date:"Y-m-d" }}</td>
-            <td>{{ sale.description|default:"-" }}</td>
-            <td>{{ sale.agent.get_full_name|default:"-" }}</td>
-            <td>{{ sale.region.name|default:"-" }}</td>
-            <td>
-                {% for hotel in sale.hotel.all %}
-                    {{ hotel.name }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    -
-                {% endfor %}
-            </td>
-            <td>{{ sale.discount }}%</td>
-            <td>{{ sale.get_discount_type_display }}</td>
-        </tr>
+{#        <tr>#}
+{#            <td>{{ sale.tour }}</td>#}
+{#            <td>{{ sale.created_at|date:"Y-m-d H:i" }}</td>#}
+{#            <td>{{ sale.processed_at|date:"Y-m-d" }}</td>#}
+{#            <td>{{ sale.description|default:"-" }}</td>#}
+{#            <td>{{ sale.agent.get_full_name|default:"-" }}</td>#}
+{#            <td>{{ sale.region.name|default:"-" }}</td>#}
+{#            <td>#}
+{#                {% for hotel in sale.hotel.all %}#}
+{#                    {{ hotel.name }}{% if not forloop.last %}, {% endif %}#}
+{#                {% empty %}#}
+{#                    -#}
+{#                {% endfor %}#}
+{#            </td>#}
+{#            <td>{{ sale.discount }}%</td>#}
+{#            <td>{{ sale.get_discount_type_display }}</td>#}
+{#        </tr>#}
         {% endfor %}
     </tbody>
 </table>
@@ -500,20 +500,20 @@ td:first-child::before {
                     backgroundColor: 'rgba(51, 102, 204, 0.1)',
                     tension: 0.3
                 },
-                {#{#}
-                {#    label: '💰 {% trans "Benefit (USD)" %}',#}
-                {#    data: chartData.revenues,#}
-                {#    borderColor: '#33AA55',#}
-                {#    backgroundColor: 'rgba(51, 170, 85, 0.1)',#}
-                {#    tension: 0.3#}
-                {#},#}
-                {#{#}
-                {#    label: '💵 {% trans "Total Price (USD)" %}',#}
-                {#    data: chartData.total_prices,#}
-                {#    borderColor: '#FF5733',#}
-                {#    backgroundColor: 'rgba(255, 87, 51, 0.1)',#}
-                {#    tension: 0.3#}
-                {#}#}
+                {
+                    label: '💰 {% trans "Benefit (USD)" %}',
+                    data: chartData.revenues,
+                    borderColor: '#33AA55',
+                    backgroundColor: 'rgba(51, 170, 85, 0.1)',
+                    tension: 0.3
+                },
+                {
+                    label: '💵 {% trans "Total Price (USD)" %}',
+                    data: chartData.total_prices,
+                    borderColor: '#FF5733',
+                    backgroundColor: 'rgba(255, 87, 51, 0.1)',
+                    tension: 0.3
+                }
             ]
         },
         options: {

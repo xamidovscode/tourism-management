@@ -71,11 +71,3 @@ class  Adult(models.Model):
     def __str__(self):
         return f"{self.name} ({self.min_age}–{self.max_age} y)"
 
-
-class  Child(models.Model):
-    name = models.CharField(max_length=100, verbose_name=_("Name"))
-    min_age = models.FloatField(verbose_name=_("Minimum Age"))
-    max_age = models.FloatField(verbose_name=_("Maximum Age"))
-
-    def __str__(self):
-        return f"{self.name} ({self.min_age}–{self.max_age} y)"

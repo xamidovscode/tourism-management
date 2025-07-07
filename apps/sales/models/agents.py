@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from apps.common.models import Adult, Child
+from apps.common.models import Adult
 from apps.sales.models import Customer
 from apps.tours.models import Tour
 from helpers.choices import SaleDiscountChoice
@@ -39,11 +39,6 @@ class Sale(models.Model):
     )
     adult = models.ForeignKey(
         Adult,
-        on_delete=models.PROTECT,
-        null=True
-    )
-    child = models.ForeignKey(
-        Child,
         on_delete=models.PROTECT,
         null=True
     )

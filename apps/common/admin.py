@@ -122,15 +122,3 @@ class AdultAdmin(RestrictedAdmin):
         }
 
 
-@admin.register(Child)
-class ChildAdmin(RestrictedAdmin):
-    list_display = ("id", "name", "min_age", "max_age")
-    list_display_links = ("id", "name", "min_age", "max_age")
-
-    def get_changeform_initial_data(self, request):
-        return {
-            'name': 'Min Child Age',
-            'min_age': 6,
-            'max_age': 11.99,
-        }
-
