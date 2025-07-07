@@ -75,7 +75,7 @@ class Sale(models.Model):
     @property
     def service_fee(self):
         """1.5% servis to‘lovi faqat"""
-        return ((self.base_price / 100) +1.5)
+        return (self.base_price * Decimal("0.015")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
     @property
     def total_amount(self):
