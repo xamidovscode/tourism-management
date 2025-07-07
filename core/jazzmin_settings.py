@@ -59,7 +59,6 @@ JAZZMIN_SETTINGS = {
     "custom_js": None,
     "custom_css": "css/main.css",
 
-    "changeform_format": "horizontal_tabs",  # optional
     "show_ui_builder": False,
 
     "hide_apps": [

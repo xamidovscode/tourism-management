@@ -3,3 +3,12 @@
 @import url('sidebar.css');
 @import url('sidebar_header.css');
 @import url('add_button.css');
+
+
+a[href$="?view=1"] i.fas.fa-eye {
+    display: none !important;
+}
+
+a[href*="delete"] i.fas.fa-trash {
+    display: none !important;
+}
