@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales List</title>
+</head>
+<body>
+    <h1>Sales List</h1>
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Tour Name</th>
+                <th>Tour Date</th>
+                {% for name in adult_names %}
+                    <th>{{ name }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.tour }}</td>
+                    <td>{{ sale.processed_at }}</td>
+                    {% for name in adult_names %}
+                        <td>-</td>  {# bu yerga keyinchalik qiymat qo‘shish mumkin #}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
