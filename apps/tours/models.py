@@ -42,8 +42,9 @@ class TourAgePrice(models.Model):
     )
 
     def __str__(self):
-        return f"{self.tour.name} | {self.adult.name} ({self.adult.min_age}-{self.adult.max_age}) | {self.price}"
-
+        if self.adult:
+            return f"{self.tour.name} | {self.adult.name} ({self.adult.min_age}-{self.adult.max_age}) | {self.price}"
+        return f"{self.tour.name} | ❌ No age group | {self.price}"
 
 class TourExtraPrice(models.Model):
     tour = models.ForeignKey(Tour, verbose_name=_("Tour"), on_delete=models.PROTECT)
