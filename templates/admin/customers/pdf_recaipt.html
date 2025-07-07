@@ -126,7 +126,9 @@
             <tr><th>Description</th><td>{{ sale.description|default:"-" }}</td></tr>
             <tr><th>Discount</th><td>{{ sale.discount }}</td></tr>
             <tr><th>Discount Type</th><td>{{ sale.discount_type|default:"-" }}</td></tr>
-            <tr><th>Total amount:</th><td>{{ sale.total_amount|default:"-" }}</td></tr>
+            <tr><th>Base Price:</th><td>{{ sale.base_price }} so'm</td></tr>
+            <tr><th>+ 1.5% Service Fee:</th><td>{{ sale.price_with_service_fee }} so'm</td></tr>
+            <tr><th>Total Amount (after discount):</th><td>{{ sale.total_amount }} so'm</td></tr>
         </table>
     </div>
         <div class="footer">

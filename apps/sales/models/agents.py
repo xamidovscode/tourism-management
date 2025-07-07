@@ -61,20 +61,30 @@ class Sale(models.Model):
 
 
     @property
-    def total_amount(self):
-        extra_price = self.extra_prices.aggregate(
+    def base_price(self):
+        """Age + Extra narx (chegirmasiz, servis to‘lovsiz)"""
+        extra = self.extra_prices.aggregate(
             amount=models.Sum('extra_price__price')
         )['amount'] or Decimal("0")
-
-        age_price = self.age_prices.aggregate(
+        age = self.age_prices.aggregate(
             amount=models.Sum('age_price__price')
         )['amount'] or Decimal("0")
+        return extra + age
 
-        total = extra_price + age_price
+    @property
+    def price_with_service_fee(self):
+        """1.5% qo‘shilgan narx"""
+        return round(self.base_price + (self.base_price * Decimal("0.015")), 2)
 
-        total_with_fee = total + (total * Decimal("0.015"))
+    @property
+    def total_amount(self):
+        """Chegirma qo‘llangan yakuniy narx"""
+        total = self.price_with_service_fee
 
-        return round(total_with_fee, 2)
+        if self.discount_type == "percentage" and self.discount > 0:
+            return round(total - (total * (Decimal(self.discount) / Decimal("100"))), 2)
+        else:
+            return round(total - Decimal(self.discount), 2)
 
     # @property
     # def tour_amount(self):
