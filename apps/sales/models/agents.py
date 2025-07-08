@@ -89,6 +89,7 @@ class Sale(models.Model):
 
         return (total - discount_amount).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
+
     # @property
     # def tour_amount(self):
     #     extra_price = self.extra_prices.all().aggregate(

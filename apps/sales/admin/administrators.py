@@ -24,20 +24,53 @@ class SoldToursExtraPriceInline(admin.TabularInline):
 
 @admin.register(SoldTours)
 class SaleProxyAdmin(RestrictedAdmin):
-
     inlines = (SoldToursAgePriceInline, SoldToursExtraPriceInline)
 
     list_display = (
-        "id", "created_at", "tour", "processed_at", "agent", 'pick_up_time', 'description', 'export_buttons', 'area', 'adult', 'discount', 'total_max', 'discount_type'
+        "id", "created_at", "tour", "processed_at", "agent", 'pick_up_time', 'description', 'export_buttons', 'area',
+        'get_adult1', 'get_adult2', 'get_adult3', 'discount', 'total_max', 'discount_type'
     )
-    list_display_links = (
-        "id", "created_at", "tour", "processed_at", "agent", 'description', 'discount', 'discount_type'
-    )
+    llist_display_links = (
+    "id", "created_at", "tour", "processed_at", "agent",
+    'description', 'discount', 'discount_type',
+    'get_adult1', 'get_adult2', 'get_adult3'
+)
     list_filter = (
         "tour", "agent",
         ("processed_at", DateRangeFilter),
     )
 
+    def get_adult1(self, obj):
+        return " "
+
+    def get_adult2(self, obj):
+        return " "
+
+    def get_adult3(self, obj):
+        return " "
+
+    @staticmethod
+    def take_first_adult():
+        adults = Adult.objects.first()
+        return adults if adults else "N/A"
+
+    @staticmethod
+    def take_2_adult():
+        adults = Adult.objects.all()
+        if not adults:
+            return "N/A"
+        return adults[1] if adults.exists() else "N/A"
+
+    @staticmethod
+    def take_3_adult():
+        adults = Adult.objects.all()
+        if not adults:
+            return "N/A"
+        return adults[2] if adults.exists() else "N/A"
+
+    get_adult1.short_description = format_html('<span style="color: #1E90FF;">{}</span>', take_first_adult.__func__())
+    get_adult2.short_description = format_html('<span style="color: #1E90FF;">{}</span>', take_2_adult.__func__())
+    get_adult3.short_description = format_html('<span style="color: #1E90FF;">{}</span>', take_3_adult.__func__())
 
     def export_buttons(self, obj):
         pdf_url = reverse('export_pdf', args=[obj.pk])
