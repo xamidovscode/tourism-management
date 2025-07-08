@@ -70,7 +70,7 @@ class SaleProxyAdmin(RestrictedAdmin):
 
     get_adult1.short_description = format_html('<span style="color: #1E90FF;">{}</span>', take_first_adult.__func__())
     get_adult2.short_description = format_html('<span style="color: #1E90FF;">{}</span>', take_2_adult.__func__())
-    get_adult3.short_description = format_html('<span style="color: #1E90FF;">{}</span>', take_3_adult.__func__())
+    # get_adult3.short_description = format_html('<span style="color: #1E90FF;">{}</span>', take_3_adult.__func__())
 
     def export_buttons(self, obj):
         pdf_url = reverse('export_pdf', args=[obj.pk])
