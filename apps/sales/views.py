@@ -18,7 +18,7 @@ def sale_list(request):
     return render(request, 'sales/sale_list.html', {'sales': sales})
 
 
-def export_pdf(request, pk):
+def export_pdf1(request, pk):
     sale = SoldTours.objects.get(pk=pk)
     now = datetime.now()
 
@@ -42,6 +42,43 @@ def export_pdf(request, pk):
 
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="SoldTour_{sale.pk}.pdf"'
+    return response
+
+
+def export_pdf2(request, pk):
+    sale = SoldTours.objects.get(pk=pk)
+    now = datetime.now()
+
+    context = {
+        'sale': sale,
+        'generated_at': now.strftime('%Y-%m-%d %H:%M'),
+        'tour_name': sale.tour.name if sale.tour else '—',
+        'tour_date': sale.tour.start_sale.strftime('%d-%m-%Y') if sale.tour and sale.tour.start_sale else '—',
+
+        'hotel_name': sale.tour.hotel.name if sale.tour and sale.tour.hotel else 'Clifton International',
+        'supplier': 'MB Safari' if sale.tour.supplier else '—',
+        'vehicle': sale.tour.transfer_type.name if sale.tour and sale.tour.transfer_type else 'Motorcycle',
+
+        'pax': {
+            'adult': 0,
+            'child': 0,
+            'toddler': 0,
+            'infant': 0,
+        },
+
+        'operator': sale.agent.full_name if sale.agent else '—',
+        'notes': sale.description or 'No additional notes',
+        'meeting_point': 'Hotel Reception',
+        'guide_name': 'Stanislav Gorodilov',
+        'excursion': sale.tour.type.name if sale.tour and sale.tour.type else '—',
+    }
+
+    html_string = render_to_string('admin/customers/pdf_invoice.html', context)
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Voucher_{sale.pk}.pdf"'
     return response
 
 

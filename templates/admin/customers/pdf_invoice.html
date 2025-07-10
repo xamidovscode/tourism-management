@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tour Voucher</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 15px;
+            font-size: 11pt;
+            color: #333;
+            background-color: #fff;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 1.5px solid #1976d2;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            color: #1976d2;
+            font-size: 18pt;
+            margin: 0;
+        }
+        .header p {
+            font-size: 9pt;
+            color: #555;
+        }
+        .section {
+            margin-bottom: 15px;
+        }
+        .section h2 {
+            font-size: 13pt;
+            color: #1976d2;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+        }
+        .table th, .table td {
+            padding: 6px 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .table th {
+            background-color: #f4f6f8;
+            font-weight: 600;
+            color: #333;
+            width: 35%;
+        }
+        .footer {
+            text-align: center;
+            font-size: 9pt;
+            color: #888;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+            margin-top: 15px;
+        }
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Desert Safari Voucher</h1>
+            <p>Generated on: July 10, 2025, 08:22 AM</p>
+        </div>
+
+        <!-- Tour Details -->
+        <div class="section">
+            <h2>Tour Details</h2>
+            <table class="table">
+                <tr><th>Tour Name</th><td>Desert Safari Rak</td></tr>
+                <tr><th>Tour Date</th><td>{{ tour_date }}</td></tr>
+                <tr><th>Excursion</th><td>Professional Excursion</td></tr>
+                <tr><th>Meeting Point</th><td>Hotel Reception</td></tr>
+            </table>
+        </div>
+
+        <!-- Hotel -->
+        <div class="section">
+            <h2>Hotel Information</h2>
+            <table class="table">
+                <tr><th>Hotel Name</th><td>{{ hotel_name }}</td></tr>
+            </table>
+        </div>
+
+        <!-- Supplier & Guide -->
+        <div class="section">
+            <h2>Supplier & Guide</h2>
+            <table class="table">
+                <tr><th>Guide Name</th><td>Soshina Iulia Tamara</td></tr>
+                <tr><th>Supplier</th><td>Clietton International ADL</td></tr>
+                <tr><th>Vehicle</th><td>MB Safari Motorcycle</td></tr>
+            </table>
+        </div>
+
+        <!-- Pax -->
+        <div class="section">
+            <h2>Passenger Information</h2>
+            <table class="table">
+                <tr><th>Adults</th><td>{{ pax.adult }}</td></tr>
+                <tr><th>Children</th><td>{{ pax.child }}</td></tr>
+                <tr><th>Toddlers</th><td>{{ pax.toddler }}</td></tr>
+                <tr><th>Infants</th><td>{{ pax.infant }}</td></tr>
+            </table>
+        </div>
+
+        <!-- Notes -->
+        <div class="section">
+            <h2>Operator Notes</h2>
+            <p><strong>Operator:</strong> Coral Travel</p>
+            <p><strong>Notes:</strong> <span class="highlight">Tourist: Stanislav Gorodilov, Contact: 988725-08534, Voucher: 001295503, Time: 15:00</span></p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Coral Travel · info@coraltravel.com · +123-456-7890</p>
+            <p>Thank you for choosing our service!</p>
+        </div>
+    </div>
+</body>
+</html>
