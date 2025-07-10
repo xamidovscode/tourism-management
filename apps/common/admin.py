@@ -58,26 +58,23 @@ def custom_index(request, extra_context=None):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse(chart_data)
 
-    user = request.user
+    sales = Sale.objects.all()
 
-    if user.is_superuser or getattr(user, 'role', None) == 'admin':
-        sales = Sale.objects.all()
-        extra_context.update({
-            'sales': sales,
-            'chart_data': json.dumps(chart_data),
-            'selected_month': selected_month,
-            'selected_year': selected_year,
-            'total_orders': sum(chart_data['orders']),
-            'total_users': 1234,
-            'total_price_sum': sum(chart_data['total_prices']),
-            'total_user_revenue': sum(chart_data['revenues']),
-            'total_benefit_revenue': 1000.00,
-        })
+    extra_context.update({
+        'sales': sales,
+        'chart_data': json.dumps(chart_data),
+        'selected_month': selected_month,
+        'selected_year': selected_year,
+        'total_orders': sum(chart_data['orders']),
+        'total_users': 1234,
+        'total_price_sum': sum(chart_data['total_prices']),
+        'total_user_revenue': sum(chart_data['revenues']),
+        'total_benefit_revenue': 1000.00,
+    })
 
     return original_index(request, extra_context)
 
 admin.site.index = custom_index
-
 
 @admin.register(TourType)
 class TourTypeAdmin(RestrictedAdmin):

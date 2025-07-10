@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from apps.sales.models import Customer
-from apps.tours.models import Tour
+from apps.tours.models import Tour, TourAgePrice
 from helpers.choices import SaleDiscountChoice
 
 
@@ -55,16 +55,17 @@ class Sale(models.Model):
 
     @property
     def base_price(self):
-        """Age + Extra narx (chegirmasiz, servis to‘lovsiz)"""
-        extra = self.extra_prices.aggregate(
-            amount=models.Sum('extra_price__price')
-        )['amount'] or Decimal("0")
+        """Fakat Adult + Child + Toodle narxlar yig'indisi (extra, discount yo'q)"""
+        age_prices = TourAgePrice.objects.filter(
+            tour=self.tour,
+            name__in=["Adult", "Child", "Toodle"]
+        )
 
-        age = self.age_prices.aggregate(
-            amount=models.Sum('age_price__price')
-        )['amount'] or Decimal("0")
+        total = Decimal("0")
+        for p in age_prices:
+            total += p.price or Decimal("0")
 
-        return extra + age
+        return total
 
     @property
     def service_fee(self):
@@ -82,23 +83,6 @@ class Sale(models.Model):
             discount_amount = Decimal(self.discount)
 
         return (total - discount_amount).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-
-
-    # @property
-    # def tour_amount(self):
-    #     extra_price = self.extra_prices.all().aggregate(
-    #         amount=models.Sum('extra_price__price')
-    #     )['amount'] or 0
-    #     age_price = self.age_prices.all().aggregate(
-    #         amount=models.Sum('age_price__price')
-    #     )['amount'] or 0
-    #
-    #     total = extra_price + age_price
-    #
-    #     if self.discount_type == "percentage" and self.discount > 0:
-    #         return round(total - (total * (Decimal(self.discount) / Decimal("100"))))
-    #     else:
-    #         return total - self.discount
 
 
 
