@@ -92,27 +92,25 @@ class TourTypeAdmin(RestrictedAdmin):
 @admin.register(Currency)
 class TourTypeAdmin(RestrictedAdmin):
     list_display = ("id", "name")
+    list_display_links = ("id", "name")
 
 
 @admin.register(Hotel)
 class TourTypeAdmin(RestrictedAdmin):
     list_display = ("id", "name")
+    list_display_links = ("id", "name")
 
 
 @admin.register(Market)
 class TourTypeAdmin(RestrictedAdmin):
     list_display = ("id", "name")
+    list_display_links = ("id", "name")
 
 
 @admin.register(Region)
 class RegionAdmin(RestrictedAdmin):
     list_display = ("id", "name")
+    list_display_links = ("id", "name")
 
-
-@admin.register(Adult)
-class AdultAdmin(RestrictedAdmin):
-    list_display = ("id", "name", "min_age", "max_age")
-    list_display_links = ("id", "name", "min_age", "max_age")
-    list_filter = ('id', 'name',)
 
 

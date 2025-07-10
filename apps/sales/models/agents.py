@@ -3,7 +3,6 @@ from decimal import Decimal, ROUND_HALF_UP
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from apps.common.models import Adult
 from apps.sales.models import Customer
 from apps.tours.models import Tour
 from helpers.choices import SaleDiscountChoice
@@ -36,11 +35,6 @@ class Sale(models.Model):
     )
     hotel = models.ManyToManyField(
         'common.Hotel',
-    )
-    adult = models.ForeignKey(
-        Adult,
-        on_delete=models.PROTECT,
-        null=True
     )
     discount = models.PositiveIntegerField(
         default=0,

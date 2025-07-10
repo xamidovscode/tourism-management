@@ -7,7 +7,7 @@ __all__ = (
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.common.models import TourType, TransferType, Currency, Hotel, Adult
+from apps.common.models import TourType, TransferType, Currency, Hotel
 from helpers.choices import (
     TourConceptChoice,
 )
@@ -35,30 +35,26 @@ class Tour(models.Model):
 
 class TourAgePrice(models.Model):
     tour = models.ForeignKey(Tour, verbose_name=_("Tour"), on_delete=models.PROTECT)
-    adult = models.ForeignKey(Adult, verbose_name=_("Age Category"), on_delete=models.PROTECT, null=True)
-    price = models.DecimalField(_("Price"), max_digits=28, decimal_places=2, default=0)
+    name = models.CharField(_("Name"), max_length=100)
+    min_age = models.FloatField(_("Minimum Age"), null=True, blank=True)
+    max_age = models.FloatField(_("Maximum Age"), null=True, blank=True)
+    price = models.DecimalField(_("Price"), max_digits=28, decimal_places=2, default=0, null=True, blank=True)
     currency = models.ForeignKey(
         Currency, verbose_name=_("Currency"), on_delete=models.PROTECT, null=True, blank=True
     )
 
     def __str__(self):
-        if self.adult:
-            return f"{self.tour.name} | {self.adult.name} ({self.adult.min_age}-{self.adult.max_age}) | {self.price}"
-        return f"{self.tour.name} | ❌ No age group | {self.price}"
+        return self.tour.name + " | " + str(self.min_age) + "-" + str(self.max_age) + " | " + str(self.price)
+
 
 class TourExtraPrice(models.Model):
     tour = models.ForeignKey(Tour, verbose_name=_("Tour"), on_delete=models.PROTECT)
     created = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(_("Name"), max_length=255)
-    price = models.DecimalField(_("Price"), max_digits=28, decimal_places=2, default=0)
+    name = models.CharField(_("Name"), max_length=255, null=True, blank=True)
+    price = models.DecimalField(_("Price"), max_digits=28, decimal_places=2, default=0, null=True, blank=True)
     currency = models.ForeignKey(
         Currency, verbose_name=_("Currency"), on_delete=models.PROTECT, null=True, blank=True
     )
 
     def __str__(self):
         return self.tour.name + " | " + self.name + " | " + str(self.price) + "-" + str(self.currency.name)
-
-
-
-
-

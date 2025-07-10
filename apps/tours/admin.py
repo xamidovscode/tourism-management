@@ -1,42 +1,48 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django import forms
+from django.forms.models import BaseInlineFormSet
 
 from apps.tours.models import *
 from helpers.custom_admin import RestrictedAdmin
 
 
+class TourAgePriceForm(forms.ModelForm):
+    class Meta:
+        model = TourAgePrice
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        readonly_names = ['Adult', 'Child', 'Toodle']
+        name_val = self.initial.get('name') or getattr(self.instance, 'name', None)
+
+        if name_val in readonly_names:
+            self.fields['name'].widget.attrs['readonly'] = True
+            self.fields['name'].widget.attrs['style'] = 'pointer-events: none; background-color: #f1f1f1;'
+
+
+class TourAgePriceFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        initial = kwargs.get('initial', [])
+        if not initial:
+            kwargs['initial'] = [
+                {'name': 'Adult', 'min_age': 0, 'max_age': 1.99, 'price': 0},
+                {'name': 'Toodle', 'min_age': 2, 'max_age': 5.99, 'price': 0},
+                {'name': 'Child', 'min_age': 6, 'max_age': 11.99, 'price': 0},
+            ]
+        super().__init__(*args, **kwargs)
+
+
 class TourAgeInline(admin.TabularInline):
     model = TourAgePrice
+    form = TourAgePriceForm
+    formset = TourAgePriceFormSet
     extra = 3
 
     def get_extra(self, request, obj=None, **kwargs):
         return 0 if obj else 3
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        if obj is None:
-            formset.__init__ = self.wrap_init(formset.__init__)
-        return formset
-
-    def wrap_init(self, original_init):
-        def new_init(formset_self, *args, **kwargs):
-            from apps.tours.models import Adult  # import qilib qo‘yamiz
-            try:
-                infant = Adult.objects.get(name__icontains='Infant')
-                toddler = Adult.objects.get(name__icontains='Toodle')
-                child = Adult.objects.get(name__icontains='Child')
-            except Adult.DoesNotExist:
-                kwargs['initial'] = []
-                original_init(formset_self, *args, **kwargs)
-                return
-
-            kwargs['initial'] = [
-                {'adult': infant, 'price': 0},
-                {'adult': toddler, 'price': 0},
-                {'adult': child, 'price': 0},
-            ]
-            original_init(formset_self, *args, **kwargs)
-        return new_init
 
 
 class TourExtraPriceInline(admin.TabularInline):
@@ -47,31 +53,32 @@ class TourExtraPriceInline(admin.TabularInline):
 @admin.register(Tour)
 class TourAdmin(RestrictedAdmin):
     inlines = (TourAgeInline, TourExtraPriceInline)
+
     list_display = (
-        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'hotel', 'concept', 'transfer_type', 'price_by_age'
+        "id", 'name', 'is_pickup', "supplier", 'created',
+        'type', 'hotel', 'concept', 'transfer_type', 'price_by_age'
     )
+
     list_display_links = (
-        "id", 'name', 'is_pickup', "supplier", 'created', 'type', 'hotel', 'concept', 'transfer_type', 'price_by_age'
+        "id", 'name', 'is_pickup', "supplier", 'created',
+        'type', 'hotel', 'concept', 'transfer_type', 'price_by_age'
     )
+
     list_filter = (
         "is_pickup", 'concept', 'type', 'transfer_type', "supplier",
     )
+
     search_fields = (
         "name", "id",
     )
 
     def price_by_age(self, obj):
         result = ""
+        age_prices = TourAgePrice.objects.filter(tour=obj)
 
-        for age_price in TourAgePrice.objects.filter(tour=obj):
-            if age_price.adult:
-                name = age_price.adult.name
-            else:
-                name = "❌ (no category)"
-
-            currency = age_price.currency.name if age_price.currency else "nomalum"
-
-            result += f"{name} - {age_price.price} {currency}<br>"
+        for age_price in age_prices:
+            currency = age_price.currency.name if age_price.currency else 'nomalum'
+            result += f"{age_price.name} - {age_price.price} {currency}<br>"
 
         return format_html(result)
 
@@ -83,52 +90,44 @@ class TourAdmin(RestrictedAdmin):
 
         if not change:
             tour = form.instance
-            from apps.tours.models import Adult
+            default_prices = [
+                {'name': 'Adult', 'min_age': 0, 'max_age': 1.99, 'price': 0},
+                {'name': 'Toodle', 'min_age': 2, 'max_age': 5.99, 'price': 0},
+                {'name': 'Child', 'min_age': 6, 'max_age': 11.99, 'price': 0},
+            ]
 
-            default_names = ['Min infant Age', 'Min Toodle Age', 'Min Child Age']
-            for name in default_names:
-                try:
-                    adult = Adult.objects.get(name=name)
-                    TourAgePrice.objects.get_or_create(
-                        tour=tour,
-                        adult=adult,
-                        defaults={'price': 0, 'currency': None}
-                    )
-                except Adult.DoesNotExist:
-                    continue
+            for data in default_prices:
+                TourAgePrice.objects.get_or_create(
+                    tour=tour,
+                    name=data['name'],
+                    defaults={
+                        'min_age': data['min_age'],
+                        'max_age': data['max_age'],
+                        'price': data['price'],
+                        'currency': None
+                    }
+                )
+
 
 
 @admin.register(TourExtraPrice)
 class TourExtraPriceAdmin(RestrictedAdmin):
-    list_display = ("id", "tour", "name", "price", "currency")
-    list_display_links = ("id", "tour", "name", "price", "currency")
+    list_display = (
+        "id", "tour", "name", "price", "currency"
+    )
+    list_display_links = (
+        "id", "tour", "name", "price", "currency"
+    )
+
     list_filter = ("tour", "currency")
 
 
 @admin.register(TourAgePrice)
-class TourAgePriceAdmin(RestrictedAdmin):
+class TourExtraPriceAdmin(RestrictedAdmin):
     list_display = (
-        "id", "tour", "get_name", "get_min_age", "get_max_age", "price", "currency"
+        "id", "tour", "name", "min_age", "max_age", "price", "currency"
     )
     list_display_links = (
-        "id", "tour", "get_name", "get_min_age", "get_max_age", "price", "currency"
+        "id", "tour", "name", "min_age", "max_age", "price", "currency"
     )
     list_filter = ("tour", "currency")
-
-    def get_name(self, obj):
-        return obj.adult.name if obj.adult else "❌"
-
-    get_name.short_description = "Name"
-    get_name.admin_order_field = 'adult__name'
-
-    def get_min_age(self, obj):
-        return obj.adult.min_age if obj.adult else "-"
-
-    get_min_age.short_description = "Min Age"
-    get_min_age.admin_order_field = 'adult__min_age'
-
-    def get_max_age(self, obj):
-        return obj.adult.max_age if obj.adult else "-"
-
-    get_max_age.short_description = "Max Age"
-    get_max_age.admin_order_field = 'adult__max_age'
