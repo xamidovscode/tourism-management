@@ -56,8 +56,8 @@ JAZZMIN_SETTINGS = {
 
     "use_google_fonts_cdn": True,
 
-    "custom_js": None,
     "custom_css": "css/main.css",
+    "custom_js": "js/main.js",
 
     "show_ui_builder": False,
 
