@@ -104,7 +104,7 @@ def export_excel(request, pk):
         ["Child", str(sale.tour or "-")],
         ["Toodle", str(sale.tour or "-")],
         ["Discount", str(sale.discount)],
-        ["Discount percentage", str(sale.discount_type or 0)],
+        ["Discount Type", str(sale.discount_type or 0)],
     ]
 
     ws.append(headers)
