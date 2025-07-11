@@ -3,8 +3,10 @@ from datetime import datetime
 import qrcode
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from openpyxl.styles.alignment import Alignment
 from openpyxl.styles.fills import PatternFill
 from openpyxl.styles.fonts import Font
+from openpyxl.utils.cell import get_column_letter
 from openpyxl.workbook.workbook import Workbook
 from weasyprint import HTML
 from core.settings.base import BASE_DIR
@@ -89,22 +91,33 @@ def export_excel(request, pk):
     ws.title = "Sold Tour"
     headers = ["Field", "Value"]
     data = [
-        ["ID", sale.pk],
+        ["ID", str(sale.pk)],
         ["Created At", str(sale.created_at)],
         ["Tour", str(sale.tour)],
         ["Agent", str(sale.agent)],
         ["Processed At", str(sale.processed_at)],
         ["Description", sale.description or "-"],
-        ["Discount", sale.discount],
-        ["Discount Type", sale.discount_type],
+        ["Discount", str(sale.discount)],
+        ["Discount percentage", str(sale.discount_type or 0)],
     ]
+
     ws.append(headers)
     for row in data:
-        ws.append(row)
+        ws.append([str(item) for item in row])
 
     for cell in ws["1:1"]:
         cell.font = Font(bold=True, color="FFFFFF")
         cell.fill = PatternFill(start_color="4F81BD", end_color="4F81BD", fill_type="solid")
+
+    for col in range(1, 3):
+        max_length = 0
+        col_letter = get_column_letter(col)
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
+            for cell in row:
+                cell.alignment = Alignment(horizontal='left')
+                if cell.value:
+                    max_length = max(max_length, len(str(cell.value)))
+        ws.column_dimensions[col_letter].width = max_length + 2
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = f'attachment; filename="soldtour_{sale.pk}.xlsx"'
