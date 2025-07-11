@@ -81,17 +81,19 @@
         <!-- Header -->
         <div class="header">
             <h1>Desert Safari Voucher</h1>
-            <p>Generated on: July 10, 2025, 08:22 AM</p>
+            <p>Generated on: {% now "F d, Y, h:i A" %}</p>
         </div>
 
-        <!-- Tour Details -->
+        <!-- Tour Details --> -s    z0.
+        'IUY21`
         <div class="section">
             <h2>Tour Details</h2>
             <table class="table">
-                <tr><th>Tour Name</th><td>Desert Safari Rak</td></tr>
+                <tr><th>Tour Name</th><td>{{ tour_name }}</td></tr>
                 <tr><th>Tour Date</th><td>{{ tour_date }}</td></tr>
-                <tr><th>Excursion</th><td>Professional Excursion</td></tr>
+                <tr><th>Transfer Type</th><td>{{ sale.tour.transfer_type.name }}</td></tr>
                 <tr><th>Meeting Point</th><td>Hotel Reception</td></tr>
+                <tr><th>Meeting Time</th><td>00:00</td></tr>
             </table>
         </div>
 
@@ -107,7 +109,7 @@
         <div class="section">
             <h2>Supplier & Guide</h2>
             <table class="table">
-                <tr><th>Guide Name</th><td>Soshina Iulia Tamara</td></tr>
+                <tr><th>Guide Name</th><td>{{ sale.agent.full_name }}</td></tr>
                 <tr><th>Supplier</th><td>Clietton International ADL</td></tr>
                 <tr><th>Vehicle</th><td>MB Safari Motorcycle</td></tr>
             </table>
@@ -117,10 +119,10 @@
         <div class="section">
             <h2>Passenger Information</h2>
             <table class="table">
-                <tr><th>Adults</th><td>{{ pax.adult }}</td></tr>
-                <tr><th>Children</th><td>{{ pax.child }}</td></tr>
-                <tr><th>Toddlers</th><td>{{ pax.toddler }}</td></tr>
-                <tr><th>Infants</th><td>{{ pax.infant }}</td></tr>
+                <tr><th>Grand Total Adult</th><td>{{ pax.adult }}</td></tr>
+                <tr><th>Grand Total Child</th><td>{{ pax.child }}</td></tr>
+                <tr><th>Grand Total Toddler</th><td>{{ pax.toddler }}</td></tr>
+                <tr><th>Grand Total</th><td>{{ pax.infant }}</td></tr>
             </table>
         </div>
 

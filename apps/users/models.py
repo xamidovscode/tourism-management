@@ -47,7 +47,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['full_name']
 
     def __str__(self):
-        return self.username
+        return self.full_name
 
     def save(self, *args, **kwargs):
         if not self.password.startswith('pbkdf2_sha256'):
