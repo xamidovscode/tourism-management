@@ -93,10 +93,16 @@ def export_excel(request, pk):
     data = [
         ["ID", str(sale.pk)],
         ["Created At", str(sale.created_at)],
-        ["Tour", str(sale.tour)],
+        ["Tour Name", str(sale.tour)],
+        ["Tour Date", str(sale.created_at)],
         ["Agent", str(sale.agent)],
+        ["Pickup Time", str(sale.pick_up_time)],
         ["Processed At", str(sale.processed_at)],
         ["Description", sale.description or "-"],
+        ["Area", str(sale.area or "-")],
+        ["Adult", str(sale.tour or "-")],
+        ["Child", str(sale.tour or "-")],
+        ["Toodle", str(sale.tour or "-")],
         ["Discount", str(sale.discount)],
         ["Discount percentage", str(sale.discount_type or 0)],
     ]
