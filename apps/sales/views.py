@@ -128,6 +128,6 @@ def export_excel(request, pk):
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = f'attachment; filename="soldtour_{sale.pk}.xlsx"'
     wb.save(response)
-    return response
+    # return response
 
 
