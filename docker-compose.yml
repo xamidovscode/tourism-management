@@ -15,8 +15,6 @@ services:
     build: .
     command: ./entrypoint.sh.sh
     container_name: dubai_bonus_web
-    volumes:
-      - .:/app
     ports:
       - "8010:8010"
     depends_on:
