@@ -15,7 +15,7 @@ class TourAgePriceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        readonly_names = ['Adult', 'Child', 'Toodle']
+        readonly_names = ['Adult', 'Child', 'Toddle']
         name_val = self.initial.get('name') or getattr(self.instance, 'name', None)
 
         if name_val in readonly_names:
@@ -29,7 +29,7 @@ class TourAgePriceFormSet(BaseInlineFormSet):
         if not initial:
             kwargs['initial'] = [
                 {'name': 'Adult', 'min_age': 0, 'max_age': 1.99, 'price': 0},
-                {'name': 'Toodle', 'min_age': 2, 'max_age': 5.99, 'price': 0},
+                {'name': 'Toddle', 'min_age': 2, 'max_age': 5.99, 'price': 0},
                 {'name': 'Child', 'min_age': 6, 'max_age': 11.99, 'price': 0},
             ]
         super().__init__(*args, **kwargs)
@@ -48,6 +48,8 @@ class TourAgeInline(admin.TabularInline):
 class TourExtraPriceInline(admin.TabularInline):
     model = TourExtraPrice
     extra = 1
+    fields = ('name', 'adult_price', 'child_price', 'toddle_price', 'currency')
+
 
 
 @admin.register(Tour)
@@ -92,7 +94,7 @@ class TourAdmin(RestrictedAdmin):
             tour = form.instance
             default_prices = [
                 {'name': 'Adult', 'min_age': 0, 'max_age': 1.99, 'price': 0},
-                {'name': 'Toodle', 'min_age': 2, 'max_age': 5.99, 'price': 0},
+                {'name': 'Toddle', 'min_age': 2, 'max_age': 5.99, 'price': 0},
                 {'name': 'Child', 'min_age': 6, 'max_age': 11.99, 'price': 0},
             ]
 
@@ -113,10 +115,10 @@ class TourAdmin(RestrictedAdmin):
 @admin.register(TourExtraPrice)
 class TourExtraPriceAdmin(RestrictedAdmin):
     list_display = (
-        "id", "tour", "name", "price", "currency"
+        "id", "tour", "name", "adult_price", "child_price", "toddle_price", "currency"
     )
     list_display_links = (
-        "id", "tour", "name", "price", "currency"
+        "id", "tour", "name", "adult_price", "child_price", "toddle_price", "currency"
     )
 
     list_filter = ("tour", "currency")

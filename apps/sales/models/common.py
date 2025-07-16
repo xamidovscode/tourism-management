@@ -10,14 +10,12 @@ class Customer(models.Model):
     )
     birth_date = models.DateField(verbose_name='Birth date', null=True, blank=True)
     passport = models.CharField(
-        max_length=255, null=True, blank=True
+        max_length=255, null=True, blank=True, unique=True
     )
 
 
     def __str__(self):
         return (
                 self.full_name + " | " +
-                str(self.phone_number[4:]) + " | age " +
-                str(self.birth_date) + " | " +
-                str(self.passport if self.passport else "")
+                str(self.phone_number[4:])
         )

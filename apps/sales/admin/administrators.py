@@ -1,9 +1,11 @@
 from django.contrib import admin
+from django.contrib.admin.filters import DateFieldListFilter
 from django.urls import reverse
 from django.utils.html import format_html
 from rangefilter.filters import DateRangeFilter
 
-from apps.tours.models import TourAgePrice
+from apps.sales.filters import VoucherNumberFilter
+from apps.tours.models import TourAgePrice, Tour
 from helpers.custom_admin import RestrictedAdmin
 from apps.sales.models import (
     SoldTours,
@@ -27,18 +29,27 @@ class SaleProxyAdmin(RestrictedAdmin):
     inlines = (SoldToursAgePriceInline, SoldToursExtraPriceInline)
 
     list_display = (
-        "id", "created_at", "tour", "processed_at", "agent", 'pick_up_time', 'description', 'export_buttons', 'area',
-        "get_adult_price", "get_child_price", "get_toodle_price", 'discount', 'total_max', 'discount_type'
+        "id", "created_at", "tour", "get_voucher_number", "processed_at", "agent", 'pick_up_time', 'description', 'export_buttons', 'area',
+        "get_adult_price", "get_child_price", "get_toddle_price", 'discount', 'total_max', 'discount_type'
     )
 
     list_display_links = (
         "id", "created_at", "tour", "processed_at", "agent", 'pick_up_time', 'description', 'export_buttons', 'area',
-        "get_adult_price", "get_child_price", "get_toodle_price", 'discount', 'total_max', 'discount_type'
+        "get_adult_price", "get_child_price", "get_toddle_price", 'discount', 'total_max', 'discount_type'
     )
     list_filter = (
         "tour", "agent",
+        ("processed_at", DateFieldListFilter),
+        VoucherNumberFilter,
         ("processed_at", DateRangeFilter),
     )
+
+    def get_voucher_number(self, obj):
+        if obj.tour:
+            return format_html('<span style="color: #1E90FF;">{}</span>', obj.tour.id)
+        return "—"
+
+    get_voucher_number.short_description = format_html('<span style="color: #1E90FF;">Voucher Number</span>')
 
     @staticmethod
     def get_price_by_name(obj, name):
@@ -53,12 +64,12 @@ class SaleProxyAdmin(RestrictedAdmin):
 
     def get_child_price(self, obj):
         return self.get_price_by_name(obj, "Child")
-    def get_toodle_price(self, obj):
-        return self.get_price_by_name(obj, "Toodle")
+    def get_toddle_price(self, obj):
+        return self.get_price_by_name(obj, "Toddle")
 
     get_adult_price.short_description = format_html('<span style="color: #1E90FF;">Adult</span>')
     get_child_price.short_description =  format_html("<span style='color: #1E90FF;'>Child</span>")
-    get_toodle_price.short_description =  format_html("<span style='color: #1E90FF;'>Toodle</span>")
+    get_toddle_price.short_description =  format_html("<span style='color: #1E90FF;'>Toddle</span>")
 
 
     def export_buttons(self, obj):

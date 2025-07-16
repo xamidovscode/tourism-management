@@ -84,16 +84,18 @@
             <p>Generated on: {% now "F d, Y, h:i A" %}</p>
         </div>
 
-        <div class="section">
-            <h2>Tour Details</h2>
-            <table class="table">
-                <tr><th>Tour Name</th><td>{{ tour_name }}</td></tr>
-                <tr><th>Tour Date</th><td>{{ tour_date }}</td></tr>
-                <tr><th>Transfer Type</th><td>{{ sale.tour.transfer_type.name }}</td></tr>
-                <tr><th>Meeting Point</th><td>Hotel Reception</td></tr>
-                <tr><th>Meeting Time</th><td>00:00</td></tr>
-            </table>
-        </div>
+<div class="section">
+    <h2>Tour Details</h2>
+    <table class="table">
+        <tr><th>Voucher Number</th><td>{{ sale.tour.id }}</td></tr>
+        <tr><th>Tour Name</th><td>{{ tour_name }}</td></tr>
+        <tr><th>Tour Date</th><td>{{ tour_date }}</td></tr>
+        <tr><th>Transfer Type</th><td>{{ sale.tour.transfer_type.name }}</td></tr>
+        <tr><th>Meeting Point</th><td>Hotel Reception</td></tr>
+        <tr><th>Meeting Time</th><td>00:00</td></tr>
+    </table>
+</div>
+
 
         <!-- Hotel -->
         <div class="section">

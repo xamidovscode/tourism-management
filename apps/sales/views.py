@@ -102,7 +102,7 @@ def export_excel(request, pk):
         ["Area", str(sale.area or "-")],
         ["Adult", str(sale.tour or "-")],
         ["Child", str(sale.tour or "-")],
-        ["Toodle", str(sale.tour or "-")],
+        ["Toddle", str(sale.tour or "-")],
         ["Discount", str(sale.discount)],
         ["Discount Type", str(sale.discount_type or 0)],
     ]
@@ -129,5 +129,3 @@ def export_excel(request, pk):
     response['Content-Disposition'] = f'attachment; filename="soldtour_{sale.pk}.xlsx"'
     wb.save(response)
     return response
-
-

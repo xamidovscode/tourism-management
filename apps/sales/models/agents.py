@@ -11,7 +11,9 @@ from helpers.choices import SaleDiscountChoice
 class Sale(models.Model):
 
     tour = models.ForeignKey(
-        "tours.Tour",  on_delete=models.PROTECT,
+        "tours.Tour",
+        on_delete=models.PROTECT,
+        related_name="sales",
         verbose_name='Tour Name'
     )
     created_at = models.DateTimeField(auto_now_add=True)
@@ -104,6 +106,11 @@ class SaleAgePrice(models.Model):
 
 
 class SaleExtraPrice(models.Model):
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('deactivate', 'Deactivate'),
+    )
+
     sale = models.ForeignKey(
         "sales.Sale",
         on_delete=models.PROTECT,
@@ -117,7 +124,12 @@ class SaleExtraPrice(models.Model):
         'tours.TourExtraPrice',
         on_delete=models.PROTECT,
     )
-
+    sale_status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='active',
+        verbose_name="Sale Status"
+    )
 
 class TourProxy(Tour):
 
